@@ -17,12 +17,20 @@ libfcd_la_SOURCES = \
 libfcd_la_LDFLAGS = \
   -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
+# Linux only
+libfcd_la_SOURCES += hid-libusb.c
+libfcd_la_CPPFLAGS = $(LIBUSB_CFLAGS)
+libfcd_la_LIBADD   = $(LIBUSB_LIBS)
+
 ##
 ## Packaging
 ##
 
 include_HEADERS = \
   fcd.h
+
+noinst_HEADERS = \
+  hidapi.h
 
 EXTRA_DIST = \
   bootstrap

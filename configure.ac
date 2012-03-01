@@ -23,6 +23,7 @@ AC_SUBST(LT_REVISION, 0)
 AC_SUBST(LT_AGE, 0)
 
 ## check for libraries
+PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0)
 
 ## checks for header files
 
