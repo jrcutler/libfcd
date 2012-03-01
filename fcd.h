@@ -10,15 +10,29 @@ extern "C"
 # endif
 
 
+/*
+ * Defines
+ */
+
 /*! FUNcube dongle USB vendor ID */
 #define FCD_USB_VID 0x04d8
 /*! FUNcube dongle USB product ID */
 #define FCD_USB_PID 0xfb56
 
+
+/*
+ * Types
+ */
+
 /* Forward declaration of opaque FUNcube dongle structure */
 struct FCD_impl;
 /*! \brief Opaque FUNcube dongle handle */
 typedef struct FCD_impl FCD;
+
+
+/*
+ * Functions
+ */
 
 /*!
  * \brief Open a FUNcube dongle handle

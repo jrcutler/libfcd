@@ -4,9 +4,15 @@
 #ifdef HAVE_CONFIG
 # include <config.h>
 #endif
+
 #include <stdlib.h> /* NULL, malloc, free */
-#include "hidapi.h"
-#include "fcd.h"
+#include "hidapi.h" /* hid_dev, hid_open, hid_close */
+#include "fcd.h" /* FCD */
+
+
+/*
+ * Types
+ */
 
 
 /*! \brief Implementation of \ref FCD */
@@ -15,6 +21,11 @@ struct FCD_impl
 	/*! \brief HID device handle */
 	hid_device *hid_dev;
 };
+
+
+/*
+ * Functions
+ */
 
 
 FCD * fcd_open(const char *path)

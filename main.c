@@ -4,8 +4,9 @@
 #ifdef HAVE_CONFIG
 # include <config.h>
 #endif
+
 #include <stdlib.h> /* EXIT_SUCCESS, EXIT_FAILURE, NULL */
-#include "fcd.h"
+#include "fcd.h" /* FCD, fcd_open, fcd_close */
 
 
 /*!
