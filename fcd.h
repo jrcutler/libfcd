@@ -22,14 +22,15 @@ typedef struct FCD_impl FCD;
 
 /*!
  * \brief Open a FUNcube dongle handle
+ * \param[in] path USB path uniquely identifying device (or \c NULL for any)
  * \retval non-NULL pointer to new open \ref FCD
  * \retval NULL     error
  */
-FCD * fcd_open(void);
+FCD * fcd_open(const char *path);
 
 /*!
  * \brief Close a FUNcube dongle handle
- * \param[in,out] handle open \ref FCD (or NULL)
+ * \param[in,out] handle open \ref FCD (or \c NULL)
  * \retval non-NULL pointer to new open \ref FCD
  * \retval NULL     error
  * \post \p handle is no longer valid

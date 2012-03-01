@@ -17,15 +17,23 @@ struct FCD_impl
 };
 
 
-FCD * fcd_open(void)
+FCD * fcd_open(const char *path)
 {
 	FCD *handle;
 
 	handle = malloc(sizeof(FCD));
 	if (NULL != handle)
 	{
-		/* get first available FUNcube donge HID device */
-		handle->hid_dev = hid_open(FCD_USB_VID, FCD_USB_PID, NULL);
+		if (NULL == path)
+		{
+			/* get first available FUNcube dongle HID device */
+			handle->hid_dev = hid_open(FCD_USB_VID, FCD_USB_PID, NULL);
+		}
+		else
+		{
+			/* open FUNcube dongle HID device by path */
+			handle->hid_dev = hid_open_path(path);
+		}
 		if (NULL == handle->hid_dev)
 		{
 			/* could not open HID device */

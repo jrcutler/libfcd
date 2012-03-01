@@ -24,8 +24,8 @@ int main(int argc, char **argv)
 	(void) argc;
 	(void) argv;
 
-	/* get a handle */
-	fcd = fcd_open();
+	/* get a handle to any device */
+	fcd = fcd_open(NULL);
 
 	/*! \todo use open \p fcd handle */
 	if (NULL == fcd)
