@@ -32,6 +32,9 @@ include_HEADERS = \
 noinst_HEADERS = \
   hidapi.h
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libfcd.pc
+
 EXTRA_DIST = \
   bootstrap
 

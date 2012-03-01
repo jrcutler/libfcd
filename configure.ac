@@ -35,6 +35,7 @@ AC_FUNC_MALLOC
 ## generate output
 AC_SUBST([ac_aux_dir])
 AC_CONFIG_FILES([\
+  libfcd.pc \
   Makefile \
 ])
 AC_OUTPUT

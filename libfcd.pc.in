@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libfcd
+Description: FUNcube dongle interface library
+Version: @VERSION@
+Libs: -L${libdir} -lfcd
+Cflags: -I${includedir}
