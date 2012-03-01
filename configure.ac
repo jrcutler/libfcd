@@ -29,6 +29,7 @@ AC_SUBST(LT_AGE, 0)
 ## check for typedefs, structures, and compiler characteristics
 
 ## check for library functions
+AC_FUNC_MALLOC
 
 ## generate output
 AC_SUBST([ac_aux_dir])
