@@ -28,6 +28,7 @@ PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0)
 ## checks for header files
 
 ## check for typedefs, structures, and compiler characteristics
+AX_CFLAGS_WARN_ALL
 
 ## check for library functions
 AC_FUNC_MALLOC
