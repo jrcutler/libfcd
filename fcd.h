@@ -35,7 +35,7 @@ typedef struct FCD_impl FCD;
  */
 
 /*!
- * \brief Open a FUNcube dongle handle
+ * \brief Open a FUNcube dongle device
  * \param[in] path USB path uniquely identifying device (or \c NULL for any)
  * \retval non-NULL pointer to new open \ref FCD
  * \retval NULL     error
@@ -43,13 +43,13 @@ typedef struct FCD_impl FCD;
 FCD * fcd_open(const char *path);
 
 /*!
- * \brief Close a FUNcube dongle handle
- * \param[in,out] handle open \ref FCD (or \c NULL)
+ * \brief Close a FUNcube dongle device
+ * \param[in,out] dev open \ref FCD (or \c NULL)
  * \retval non-NULL pointer to new open \ref FCD
  * \retval NULL     error
- * \post \p handle is no longer valid
+ * \post \p dev is no longer valid
  */
-void fcd_close(FCD *handle);
+void fcd_close(FCD *dev);
 
 
 # ifdef __cplusplus

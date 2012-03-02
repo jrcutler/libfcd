@@ -25,16 +25,16 @@ int main(int argc, char **argv)
 	(void) argc;
 	(void) argv;
 
-	/* get a handle to any device */
+	/* get any device */
 	fcd = fcd_open(NULL);
 
-	/*! \todo use open \p fcd handle */
+	/*! \todo use open \p fcd device */
 	if (NULL == fcd)
 	{
 		result = EXIT_FAILURE;
 	}
 
-	/* close handle */
+	/* close device */
 	fcd_close(fcd);
 
 	return result;
