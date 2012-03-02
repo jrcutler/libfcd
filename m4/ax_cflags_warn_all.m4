@@ -68,7 +68,7 @@ VAR,[VAR="no, unknown"
 ac_save_[]FLAGS="$[]FLAGS"
 for ac_arg dnl
 in "-warn all  % -warn all"   dnl Intel
-   "-pedantic  % -Wall -Wextra -pedantic"       dnl GCC
+   "-pedantic  % -Wall -Wextra -pedantic -Wno-variadic-macros" dnl GCC
    "-xstrconst % -v"          dnl Solaris C
    "-std1      % -verbose -w0 -warnprotos" dnl Digital Unix
    "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd" dnl AIX
