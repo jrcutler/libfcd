@@ -13,6 +13,12 @@ AM_INIT_AUTOMAKE([1.10 foreign -Wall -Werror])
 # enable silent rules (if available)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
+## handle command line options
+AC_ARG_ENABLE([warnings],
+  [AS_HELP_STRING([--enable-warnings],
+    [Enable extra verbose warnings (disabled by default)])])
+AS_IF([test "x$enable_warnings" = "xyes"], [AX_CFLAGS_WARN_ALL])
+
 ## check for programs
 AC_PROG_CC
 LT_INIT
@@ -28,7 +34,6 @@ PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0)
 ## checks for header files
 
 ## check for typedefs, structures, and compiler characteristics
-AX_CFLAGS_WARN_ALL
 
 ## check for library functions
 AC_FUNC_MALLOC
