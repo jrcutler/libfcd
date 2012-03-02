@@ -6,7 +6,7 @@
 #endif
 
 #include <stdlib.h> /* NULL, malloc, free */
-#include "hidapi.h" /* hid_dev, hid_open, hid_close */
+#include "hidapi.h" /* hid_* */
 #include "fcd.h" /* FCD */
 
 
