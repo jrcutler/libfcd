@@ -29,10 +29,29 @@ struct FCD_impl;
 /*! \brief Opaque FUNcube dongle handle */
 typedef struct FCD_impl FCD;
 
+/*!
+ * \brief FUNcube dongle path handler function
+ * \param[in]     path    path to a FUNcube dongle
+ * \param[in,out] context user context pointer
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+typedef int (fcd_path_fn)(const char *path, void *context);
+
 
 /*
  * Functions
  */
+
+/*!
+ * \brief Call a user-provided path handler for all FUNcube dongles present
+ * \param         fn      handler function
+ * \param[in,out] context context pointer
+ * \retval 0     success
+ * \retval non-0 failure
+ * \note Terminates on the first call to \p fn that fails.
+ */
+int fcd_for_each(fcd_path_fn *fn, void *context);
 
 /*!
  * \brief Open a FUNcube dongle device

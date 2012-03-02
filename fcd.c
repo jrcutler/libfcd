@@ -28,6 +28,36 @@ struct FCD_impl
  */
 
 
+int fcd_for_each(fcd_path_fn *fn, void *context)
+{
+	struct hid_device_info *devs, *current;
+	int result = 0;
+
+	/* enumerate FUNcube dongles */
+	devs = hid_enumerate(FCD_USB_VID, FCD_USB_PID);
+	current = devs;
+	/* for each FUNcube dongle */
+	while (NULL != current)
+	{
+		if (NULL != current->path)
+		{
+			/* call user function */
+			result = fn(current->path, context);
+			if (result)
+			{
+				/* abort on first error */
+				break;
+			}
+		}
+		/* proceed to next device */
+		current = current->next;
+	}
+	hid_free_enumeration(devs);
+
+	return result;
+}
+
+
 FCD * fcd_open(const char *path)
 {
 	FCD *dev;
