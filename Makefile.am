@@ -30,6 +30,7 @@ include_HEADERS = \
   fcd.h
 
 noinst_HEADERS = \
+  fcd_cmd.h \
   hidapi.h
 
 pkgconfigdir = $(libdir)/pkgconfig
