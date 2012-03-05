@@ -37,7 +37,13 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libfcd.pc
 
 EXTRA_DIST = \
-  bootstrap
+  bootstrap \
+  hidapi/AUTHORS.txt \
+  hidapi/LICENSE-bsd.txt \
+  hidapi/LICENSE-gpl3.txt \
+  hidapi/LICENSE-orig.txt \
+  hidapi/LICENSE.txt
+
 
 ##
 ## Cleanup
