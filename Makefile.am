@@ -17,10 +17,18 @@ libfcd_la_SOURCES = \
 libfcd_la_LDFLAGS = \
   -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
-# Linux only
-libfcd_la_SOURCES += hidapi/hid-libusb.c
-libfcd_la_CPPFLAGS = $(LIBUSB_CFLAGS)
-libfcd_la_LIBADD   = $(LIBUSB_LIBS)
+if LINUX
+  libfcd_la_SOURCES += hidapi/hid-libusb.c
+  libfcd_la_CPPFLAGS = $(LIBUSB_CFLAGS)
+  libfcd_la_LIBADD   = $(LIBUSB_LIBS)
+endif
+if MACOSX
+  libfcd_la_SOURCES += hidapi/hid-macosx.c
+  libfcd_la_LDFLAGS += -framework IOKit -framework CoreFoundation
+endif
+if WINDOWS
+  libfcd_la_SOURCES += hidapi/hid-windows.c
+endif
 
 ##
 ## Packaging
