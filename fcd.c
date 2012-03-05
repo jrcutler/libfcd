@@ -23,31 +23,83 @@ struct FCD_impl
 	hid_device *hid_dev;
 };
 
+/*! \brief FUNcube dongle command data length */
+#define FCD_COMMAND_DATA_LEN 63
+
+/*! \brief Common FUNcube dongle command structure */
+typedef struct
+{
+	/*! \brief Report ID (always 0) */
+	unsigned char report_id;
+	/*! \brief Command byte */
+	unsigned char command;
+	/*! \brief Payload data (varies by \p command) */
+	unsigned char data[FCD_COMMAND_DATA_LEN];
+} fcd_command;
+
+/*! \brief FUNcube dongle response data length */
+#define FCD_RESPONSE_DATA_LEN 62
+
+/*! \brief Common FUNcube dongle response structure */
+typedef struct
+{
+	/*! \brief Command byte (should match previous \ref fcd_command) */
+	unsigned char command;
+	/*! \brief Status byte (0 for failure, 1 for success) */
+	unsigned char status;
+	/*! \brief Payload data (varies by \p command) */
+	unsigned char data[FCD_RESPONSE_DATA_LEN];
+} fcd_response;
+
+/*! \brief Shared command/response buffer type */
+typedef union
+{
+	/*! \brief Command */
+	fcd_command  command;
+	/*! \brief Response */
+	fcd_response response;
+} fcd_buffer;
+
 
 /*
  * Private Functions
  */
 
 
+/*! \brief Perform a get command
+ * \param[in,out] dev  open \ref FCD
+ * \param         cmd  command ID
+ * \param[out]    data output data pointer
+ * \param         len  output data length
+ * \returns length of received data or -1 on error
+ */
 int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len)
 {
-	unsigned char buffer[65];
+	fcd_buffer buffer;
 	int result = -1;
 
-	/*! \TODO validate cmd */
+	/*! \todo validate cmd */
+	/* do not allow NULL pointer for non-trivial get */
 	if (len && (NULL == data)) return -1;
-	if (len > 62) return -1;
-
-	memset(buffer, 0, sizeof(buffer));
-	buffer[1] = cmd;
-	if (hid_write(dev->hid_dev, buffer, 2) == 2)
+	/* trim request length as needed */
+	if (len > sizeof(buffer.response.data))
 	{
-		buffer[1] = 0;
-		if (hid_read(dev->hid_dev, buffer, len+2) == len+2)
+		len = sizeof(buffer.response.data);
+	}
+
+	/* send get request */
+	buffer.command.report_id = 0;
+	buffer.command.command = cmd;
+	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, 2) == 2)
+	{
+		/* receive get response */
+		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, len+2) == len+2)
 		{
-			if ((buffer[0] == cmd) && (buffer[1] == 1))
+			/* validate response */
+			if ((buffer.response.command == cmd) &&
+				(buffer.response.status == 1))
 			{
-				memcpy(data, buffer+2, len);
+				memcpy(data, &buffer.response.data, len);
 				result = len;
 			}
 		}
@@ -57,23 +109,39 @@ int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len)
 }
 
 
+/*! \brief Perform a set command
+ * \param[in,out] dev  open \ref FCD
+ * \param         cmd  command ID
+ * \param[in]     data input data pointer
+ * \param         len  input data length
+ * \returns length of sent data or -1 on error
+ */
 int fcd_set(FCD *dev, unsigned char cmd, const void *data, unsigned char len)
 {
-	unsigned char buffer[65];
+	fcd_buffer buffer;
 	int result = -1;
 
-	/*! \TODO validate cmd */
+	/*! \todo validate cmd */
+	/* do not allow NULL pointer for non-trivial set */
 	if (len && (NULL == data)) return -1;
-	if (len > 62) return -1;
-
-	buffer[0] = 0;
-	buffer[1] = cmd;
-	memcpy(buffer+2, data, len);
-	if (hid_write(dev->hid_dev, buffer, len+2) == len+2)
+	/* trim request length as needed */
+	if (len > sizeof(buffer.command.data))
 	{
-		if (hid_read(dev->hid_dev, buffer, 2) == 2)
+		len = sizeof(buffer.command.data);
+	}
+
+	/* send set request */
+	buffer.command.report_id = 0;
+	buffer.command.command = cmd;
+	memcpy(&buffer.command.data, data, len);
+	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, len+2) == len+2)
+	{
+		/* receive set response */
+		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, 2) == 2)
 		{
-			if ((buffer[0] == cmd) && (buffer[1] == 1))
+			/* validate response */
+			if ((buffer.response.command == cmd) &&
+				(buffer.response.status == 1))
 			{
 				result = len;
 			}
