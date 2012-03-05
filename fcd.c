@@ -7,7 +7,7 @@
 
 #include <stdlib.h> /* NULL, malloc, free */
 #include <string.h> /* memset, memcpy */
-#include "hidapi.h" /* hid_* */
+#include "hidapi/hidapi.h" /* hid_* */
 #include "fcd.h" /* FCD */
 #include "fcd_cmd.h" /* FCD_CMD_* */
 

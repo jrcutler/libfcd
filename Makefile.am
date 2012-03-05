@@ -18,7 +18,7 @@ libfcd_la_LDFLAGS = \
   -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 # Linux only
-libfcd_la_SOURCES += hid-libusb.c
+libfcd_la_SOURCES += hidapi/hid-libusb.c
 libfcd_la_CPPFLAGS = $(LIBUSB_CFLAGS)
 libfcd_la_LIBADD   = $(LIBUSB_LIBS)
 
@@ -31,7 +31,7 @@ include_HEADERS = \
 
 noinst_HEADERS = \
   fcd_cmd.h \
-  hidapi.h
+  hidapi/hidapi.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libfcd.pc
