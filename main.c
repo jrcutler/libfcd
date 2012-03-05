@@ -5,9 +5,9 @@
 # include <config.h>
 #endif
 
-#include <stdio.h> /* printf */
+#include <stdio.h> /* printf, fprintf, stderr */
 #include <stdlib.h> /* EXIT_SUCCESS, EXIT_FAILURE, NULL */
-#include "fcd.h" /* FCD, fcd_for_each, fcd_open, fcd_close */
+#include "fcd.h" /* FCD, fcd_for_each, fcd_open, fcd_close, fcd_query */
 
 
 /*! \copydetails fcd_path_fn
@@ -17,6 +17,7 @@ int funcube_debug(const char *path, void *context)
 {
 	int result = 0;
 	FCD *fcd;
+	char query[64];
 
 	/* explicitly ignore context */
 	(void) context;
@@ -26,18 +27,24 @@ int funcube_debug(const char *path, void *context)
 
 	if (NULL != fcd)
 	{
-		/*! \todo use open \p fcd device */
+		if (fcd_query(fcd, query, sizeof(query)))
+		{
+			/* output simple diagnostics for the device */
+			printf("[%s]\t%s\n", path, query);
+		}
+		else
+		{
+			fprintf(stderr, "Query failed for [%s]\n", path);
+			result = -1;
+		}
+		/* close device */
+		fcd_close(fcd);
 	}
 	else
 	{
+		fprintf(stderr, "Could not open [%s]\n", path);
 		result = -1;
 	}
-
-	/* close device */
-	fcd_close(fcd);
-
-	/* output simple diagnostics for the device */
-	printf("[%s] %s\n", path, (result) ? "ERROR" : "OK");
 
 	return result;
 }

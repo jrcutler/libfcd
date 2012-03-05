@@ -9,6 +9,7 @@
 #include <string.h> /* memset, memcpy */
 #include "hidapi.h" /* hid_* */
 #include "fcd.h" /* FCD */
+#include "fcd_cmd.h" /* FCD_CMD_* */
 
 
 /*
@@ -223,4 +224,19 @@ void fcd_close(FCD *dev)
 		hid_close(dev->hid_dev);
 		free(dev);
 	}
+}
+
+
+char * fcd_query(FCD *dev, char *str, int len)
+{
+	/* query device */
+	len = fcd_get(dev, FCD_CMD_QUERY, str, len);
+	if (!len)
+	{
+		/* query failed */
+		return NULL;
+	}
+	/* ensure NULL-terminated string */
+	str[len-1] = 0;
+	return str;
 }

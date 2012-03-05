@@ -70,6 +70,16 @@ FCD * fcd_open(const char *path);
  */
 void fcd_close(FCD *dev);
 
+/*!
+ * \brief Query a FUNcube dongle device
+ * \param[in,out] dev open \ref FCD (or \c NULL)
+ * \param[out]    str output buffer
+ * \param         len length of output buffer
+ * \retval NULL     error (\p str has not changed)
+ * \retval non-NULL success (\p str)
+ */
+char * fcd_query(FCD *dev, char *str, int len);
+
 
 # ifdef __cplusplus
 }
