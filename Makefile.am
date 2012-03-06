@@ -16,11 +16,12 @@ libfcd_la_SOURCES = \
   fcd.c
 libfcd_la_LDFLAGS = \
   -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+libfcd_la_LIBADD  = @AX_SS_LIB@
 
 if LINUX
   libfcd_la_SOURCES += hidapi/hid-libusb.c
   libfcd_la_CPPFLAGS = $(LIBUSB_CFLAGS)
-  libfcd_la_LIBADD   = $(LIBUSB_LIBS)
+  libfcd_la_LIBADD  += $(LIBUSB_LIBS)
 endif
 if MACOSX
   libfcd_la_SOURCES += hidapi/hid-macosx.c

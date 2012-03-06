@@ -52,6 +52,7 @@ AS_IF([test "x$LINUX" = "xyes" ],
 
 ## check for library functions
 AC_FUNC_MALLOC
+AX_SHORT_SLEEP
 
 ## generate output
 AC_SUBST([ac_aux_dir])

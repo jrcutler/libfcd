@@ -81,6 +81,16 @@ void fcd_close(FCD *dev);
 char * fcd_query(FCD *dev, char *str, int len);
 
 
+/*!
+ * \brief Reset to bootloader
+ */
+void fcd_reset_bootloader(void);
+/*!
+ * \brief Reset to application
+ */
+void fcd_reset_application(void);
+
+
 # ifdef __cplusplus
 }
 # endif

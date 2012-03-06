@@ -7,6 +7,14 @@
 
 #include <stdlib.h> /* NULL, malloc, free */
 #include <string.h> /* memset, memcpy */
+#ifdef HAVE_USLEEP
+# ifdef HAVE_UNISTD_H
+#  include <unistd.h> /* usleep */
+# endif
+# define ms_sleep(ms) usleep((ms)*SHORT_SLEEP_FACTOR)
+#elif defined(HAVE_NAP)
+# define ms_sleep(ms) nap((ms)*SHORT_SLEEP_FACTOR)
+#endif
 #include "hidapi/hidapi.h" /* hid_* */
 #include "fcd.h" /* FCD */
 #include "fcd_cmd.h" /* FCD_CMD_* */
@@ -153,6 +161,29 @@ int fcd_set(FCD *dev, unsigned char cmd, const void *data, unsigned char len)
 }
 
 
+/*! \copydetails fcd_path_fn
+ * \brief Reset FUNcube dongle
+ * \note \p context points to specified reset command
+ */
+int fcd_reset(const char *path, void *context)
+{
+	FCD *dev;
+	unsigned char cmd = *(unsigned char*)context;
+
+	/* try to open device */
+	dev = fcd_open(path);
+	if (NULL != dev)
+	{
+		/* reset and close */
+		fcd_set(dev, cmd, NULL, 0);
+		fcd_close(dev);
+	}
+
+	/* always return success */
+	return 0;
+}
+
+
 /*
  * Functions
  */
@@ -239,4 +270,20 @@ char * fcd_query(FCD *dev, char *str, int len)
 	/* ensure NULL-terminated string */
 	str[len-1] = 0;
 	return str;
+}
+
+
+void fcd_reset_bootloader(void)
+{
+	unsigned char cmd = FCD_CMD_RESET_BOOTLOADER;
+	fcd_for_each(fcd_reset, &cmd);
+	ms_sleep(1000);
+}
+
+
+void fcd_reset_application(void)
+{
+	unsigned char cmd = FCD_CMD_RESET_APPLICATION;
+	fcd_for_each(fcd_reset, &cmd);
+	ms_sleep(1000);
 }
