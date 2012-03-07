@@ -51,6 +51,7 @@ AS_IF([test "x$LINUX" = "xyes" ],
 ## check for typedefs, structures, and compiler characteristics
 
 ## check for library functions
+AC_CHECK_FUNCS([memset])
 AC_FUNC_MALLOC
 AX_SHORT_SLEEP
 

@@ -118,14 +118,17 @@ int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len)
 }
 
 
-/*! \brief Perform a set command
+/*! \brief Perform a set command with optional skipped data bytes
  * \param[in,out] dev  open \ref FCD
  * \param         cmd  command ID
  * \param[in]     data input data pointer
  * \param         len  input data length
+ * \param         skip number of data bytes to skip (normally 0)
  * \returns length of sent data or -1 on error
+ * \note For now, this only appears to be necessary for the write block command.
  */
-int fcd_set(FCD *dev, unsigned char cmd, const void *data, unsigned char len)
+int fcd_set_skip(FCD *dev, unsigned char cmd, const void *data,
+	unsigned char len, unsigned char skip)
 {
 	fcd_buffer buffer;
 	int result = -1;
@@ -134,16 +137,20 @@ int fcd_set(FCD *dev, unsigned char cmd, const void *data, unsigned char len)
 	/* do not allow NULL pointer for non-trivial set */
 	if (len && (NULL == data)) return -1;
 	/* trim request length as needed */
-	if (len > sizeof(buffer.command.data))
+	if (len > sizeof(buffer.command.data) - skip)
 	{
-		len = sizeof(buffer.command.data);
+		len = sizeof(buffer.command.data) - skip;
 	}
 
 	/* send set request */
 	buffer.command.report_id = 0;
 	buffer.command.command = cmd;
-	memcpy(&buffer.command.data, data, len);
-	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, len+2) == len+2)
+	/* pad skipped byte(s) */
+	memset(&buffer.command.data, 0, skip);
+	/* copy in data */
+	memcpy(&(buffer.command.data[skip]), data, len);
+	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, len+2+skip) ==
+		len+2+skip)
 	{
 		/* receive set response */
 		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, 2) == 2)
@@ -158,6 +165,19 @@ int fcd_set(FCD *dev, unsigned char cmd, const void *data, unsigned char len)
 	}
 
 	return result;
+}
+
+
+/*! \brief Perform a set command
+ * \param[in,out] dev  open \ref FCD
+ * \param         cmd  command ID
+ * \param[in]     data input data pointer
+ * \param         len  input data length
+ * \returns length of sent data or -1 on error
+ */
+int fcd_set(FCD *dev, unsigned char cmd, const void *data, unsigned char len)
+{
+	return fcd_set_skip(dev, cmd, data, len, 0);
 }
 
 
