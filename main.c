@@ -29,8 +29,13 @@ int funcube_debug(const char *path, void *context)
 	{
 		if (fcd_query(fcd, query, sizeof(query)))
 		{
+			unsigned int start, end;
 			/* output simple diagnostics for the device */
 			printf("[%s]\t%s\n", path, query);
+			if (!fcd_bl_get_address_range(fcd, &start, &end))
+			{
+				printf("\tRange: 0x%08x - 0x%08x\n", start, end);
+			}
 		}
 		else
 		{

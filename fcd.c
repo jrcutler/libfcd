@@ -7,6 +7,9 @@
 
 #include <stdlib.h> /* NULL, malloc, free */
 #include <string.h> /* memset, memcpy */
+#ifdef HAVE_STDINT_H
+# include <stdint.h> /* [u]int*_t */
+#endif
 #ifdef HAVE_USLEEP
 # ifdef HAVE_UNISTD_H
 #  include <unistd.h> /* usleep */
@@ -73,6 +76,27 @@ typedef union
 /*
  * Private Functions
  */
+
+
+/*!
+ * \brief Convert 32-bit integer to/from little-endian
+ * \param v value
+ * \returns \p v on little-endian systems or byte-swapped \p v on big-endian
+ * systems
+ */
+inline uint32_t convert_le_u32(uint32_t v)
+{
+#ifdef WORDS_BIGENDIAN
+	/* big endian */
+	return ((v & 0xff000000) >> 24) |
+	       ((v & 0x00ff0000) >>  8) |
+	       ((v & 0x0000ff00) <<  8) |
+	       ((v & 0x000000ff) << 24));
+#else
+	/* little endian */
+	return v;
+#endif
+}
 
 
 /*! \brief Perform a get command
@@ -290,6 +314,51 @@ char * fcd_query(FCD *dev, char *str, int len)
 	/* ensure NULL-terminated string */
 	str[len-1] = 0;
 	return str;
+}
+
+
+int fcd_bl_set_address(FCD *dev, unsigned int addr)
+{
+	int result;
+	uint32_t address;
+
+	/* convert from native format */
+	address = convert_le_u32(addr);
+
+	/* set address */
+	result = fcd_set(dev, FCD_CMD_SET_BYTE_ADDR, &address, sizeof(address));
+	if (result != sizeof(address))
+	{
+		return -1;
+	}
+
+	return 0;
+}
+
+
+int fcd_bl_get_address_range(FCD *dev, unsigned int *start, unsigned int *end)
+{
+	int result;
+	uint32_t range[2];
+
+	/* get raw address range */
+	result = fcd_get(dev, FCD_CMD_GET_BYTE_ADDR_RANGE, range, sizeof(range));
+	if (result != sizeof(range))
+	{
+		return -1;
+	}
+
+	/* output in native format */
+	if (NULL != start)
+	{
+		*start = convert_le_u32(range[0]);
+	}
+	if (NULL != end)
+	{
+		*end = convert_le_u32(range[1]);
+	}
+
+	return 0;
 }
 
 

@@ -49,6 +49,9 @@ AS_IF([test "x$LINUX" = "xyes" ],
 ## checks for header files
 
 ## check for typedefs, structures, and compiler characteristics
+AC_C_INLINE
+AC_C_BIGENDIAN
+AC_TYPE_UINT32_T
 
 ## check for library functions
 AC_CHECK_FUNCS([memset])

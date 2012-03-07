@@ -80,11 +80,32 @@ void fcd_close(FCD *dev);
  */
 char * fcd_query(FCD *dev, char *str, int len);
 
+/*!
+ * \brief Set FUNcube dongle flash address
+ * \param[in,out] dev  open \ref FCD
+ * \param         addr new address
+ * \pre FUNcube dongle must be in bootloader
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+int fcd_bl_set_address(FCD *dev, unsigned int addr);
+
+/*!
+ * \brief Get FUNcube dongle flash address range
+ * \param[in,out] dev   open \ref FCD
+ * \param[out]    start start address pointer (NULL to ignore)
+ * \param[out]    end   end address pointer (NULL to ignore)
+ * \pre FUNcube dongle must be in bootloader
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+int fcd_bl_get_address_range(FCD *dev, unsigned int *start, unsigned int *end);
 
 /*!
  * \brief Reset to bootloader
  */
 void fcd_reset_bootloader(void);
+
 /*!
  * \brief Reset to application
  */
