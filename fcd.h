@@ -81,6 +81,15 @@ void fcd_close(FCD *dev);
 char * fcd_query(FCD *dev, char *str, int len);
 
 /*!
+ * \brief Erase FUNcube dongle application code
+ * \param[in,out] dev open \ref FCD
+ * \pre FUNcube dongle must be in bootloader
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+int fcd_bl_erase_application(FCD *dev);
+
+/*!
  * \brief Set FUNcube dongle flash address
  * \param[in,out] dev  open \ref FCD
  * \param         addr new address

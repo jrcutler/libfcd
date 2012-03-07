@@ -317,6 +317,12 @@ char * fcd_query(FCD *dev, char *str, int len)
 }
 
 
+int fcd_bl_erase_application(FCD *dev)
+{
+	return fcd_set(dev, FCD_CMD_ERASE_APPLICATION, NULL, 0);
+}
+
+
 int fcd_bl_set_address(FCD *dev, unsigned int addr)
 {
 	int result;
