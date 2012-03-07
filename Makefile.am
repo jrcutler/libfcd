@@ -2,7 +2,7 @@
 ## Targets
 ##
 
-bin_PROGRAMS = fcd
+bin_PROGRAMS = fcd fcd-flash
 lib_LTLIBRARIES = libfcd.la
 
 ##
@@ -11,6 +11,9 @@ lib_LTLIBRARIES = libfcd.la
 
 fcd_SOURCES = main.c
 fcd_LDADD = libfcd.la
+
+fcd_flash_SOURCES = flash.c
+fcd_flash_LDADD = libfcd.la
 
 libfcd_la_SOURCES = \
   fcd.c
