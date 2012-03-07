@@ -111,6 +111,26 @@ int fcd_bl_set_address(FCD *dev, unsigned int addr);
 int fcd_bl_get_address_range(FCD *dev, unsigned int *start, unsigned int *end);
 
 /*!
+ * \brief Read block from FUNcube dongle
+ * \param[in,out] dev   open \ref FCD
+ * \param[out]    block block data (48 bytes)
+ * \pre FUNcube dongle must be in bootloader
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+int fcd_bl_read_block(FCD *dev, unsigned char *block);
+
+/*!
+ * \brief Write block to FUNcube dongle
+ * \param[in,out] dev   open \ref FCD
+ * \param[in]     block block data (48 bytes)
+ * \pre FUNcube dongle must be in bootloader
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+int fcd_bl_write_block(FCD *dev, const unsigned char *block);
+
+/*!
  * \brief Reset to bootloader
  */
 void fcd_reset_bootloader(void);

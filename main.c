@@ -34,7 +34,18 @@ int funcube_debug(const char *path, void *context)
 			printf("[%s]\t%s\n", path, query);
 			if (!fcd_bl_get_address_range(fcd, &start, &end))
 			{
+				unsigned char block[48];
 				printf("\tRange: 0x%08x - 0x%08x\n", start, end);
+				fcd_bl_set_address(fcd, start);
+				if (!fcd_bl_read_block(fcd, block))
+				{
+					unsigned int index;
+					for (index = 0; index < sizeof(block); ++index)
+					{
+						char delim = ((index & 0xf) == 0xf) ? '\n' : ' ';
+						printf("%02x%c", block[index], delim);
+					}
+				}
 			}
 		}
 		else

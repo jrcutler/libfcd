@@ -40,6 +40,9 @@
  */
 #define FCD_CMD_GET_BYTE_ADDR_RANGE 26
 /*! \brief Write application block
+ * \note This command does not follow the normal layout. Instead, the data
+ * segment is offset by one byte (via fcd_set_skip()).
+ * \pre FUNcube dongle is in bootloader mode
  */
 #define FCD_CMD_WRITE_BLOCK         27
 /*! \brief Read application block

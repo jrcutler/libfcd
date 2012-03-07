@@ -368,6 +368,27 @@ int fcd_bl_get_address_range(FCD *dev, unsigned int *start, unsigned int *end)
 }
 
 
+int fcd_bl_read_block(FCD *dev, unsigned char *block)
+{
+	if (fcd_get(dev, FCD_CMD_READ_BLOCK, block, 48) != 48)
+	{
+		return -1;
+	}
+	return 0;
+}
+
+
+int fcd_bl_write_block(FCD *dev, const unsigned char *block)
+{
+	/* use 1 byte skip, as write block data starts at 3 for unknown reason */
+	if (fcd_set_skip(dev, FCD_CMD_WRITE_BLOCK, block, 48, 1) != 48)
+	{
+		return -1;
+	}
+	return 0;
+}
+
+
 void fcd_reset_bootloader(void)
 {
 	unsigned char cmd = FCD_CMD_RESET_BOOTLOADER;
