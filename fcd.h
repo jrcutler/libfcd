@@ -51,7 +51,7 @@ typedef int (fcd_path_fn)(const char *path, void *context);
  * \retval non-0 failure
  * \note Terminates on the first call to \p fn that fails.
  */
-int fcd_for_each(fcd_path_fn *fn, void *context);
+extern int fcd_for_each(fcd_path_fn *fn, void *context);
 
 /*!
  * \brief Open a FUNcube dongle device
@@ -59,7 +59,7 @@ int fcd_for_each(fcd_path_fn *fn, void *context);
  * \retval non-NULL pointer to new open \ref FCD
  * \retval NULL     error
  */
-FCD * fcd_open(const char *path);
+extern FCD * fcd_open(const char *path);
 
 /*!
  * \brief Close a FUNcube dongle device
@@ -68,7 +68,7 @@ FCD * fcd_open(const char *path);
  * \retval NULL     error
  * \post \p dev is no longer valid
  */
-void fcd_close(FCD *dev);
+extern void fcd_close(FCD *dev);
 
 /*!
  * \brief Query a FUNcube dongle device
@@ -78,7 +78,7 @@ void fcd_close(FCD *dev);
  * \retval NULL     error (\p str has not changed)
  * \retval non-NULL success (\p str)
  */
-char * fcd_query(FCD *dev, char *str, int len);
+extern char * fcd_query(FCD *dev, char *str, int len);
 
 /*!
  * \brief Erase FUNcube dongle application code
@@ -87,7 +87,7 @@ char * fcd_query(FCD *dev, char *str, int len);
  * \retval 0     success
  * \retval non-0 failure
  */
-int fcd_bl_erase_application(FCD *dev);
+extern int fcd_bl_erase_application(FCD *dev);
 
 /*!
  * \brief Set FUNcube dongle flash address
@@ -97,7 +97,7 @@ int fcd_bl_erase_application(FCD *dev);
  * \retval 0     success
  * \retval non-0 failure
  */
-int fcd_bl_set_address(FCD *dev, unsigned int addr);
+extern int fcd_bl_set_address(FCD *dev, unsigned int addr);
 
 /*!
  * \brief Get FUNcube dongle flash address range
@@ -108,7 +108,8 @@ int fcd_bl_set_address(FCD *dev, unsigned int addr);
  * \retval 0     success
  * \retval non-0 failure
  */
-int fcd_bl_get_address_range(FCD *dev, unsigned int *start, unsigned int *end);
+extern int fcd_bl_get_address_range(FCD *dev, unsigned int *start,
+	unsigned int *end);
 
 /*!
  * \brief Read block from FUNcube dongle
@@ -118,7 +119,7 @@ int fcd_bl_get_address_range(FCD *dev, unsigned int *start, unsigned int *end);
  * \retval 0     success
  * \retval non-0 failure
  */
-int fcd_bl_read_block(FCD *dev, unsigned char *block);
+extern int fcd_bl_read_block(FCD *dev, unsigned char *block);
 
 /*!
  * \brief Write block to FUNcube dongle
@@ -128,17 +129,17 @@ int fcd_bl_read_block(FCD *dev, unsigned char *block);
  * \retval 0     success
  * \retval non-0 failure
  */
-int fcd_bl_write_block(FCD *dev, const unsigned char *block);
+extern int fcd_bl_write_block(FCD *dev, const unsigned char *block);
 
 /*!
  * \brief Reset to bootloader
  */
-void fcd_reset_bootloader(void);
+extern void fcd_reset_bootloader(void);
 
 /*!
  * \brief Reset to application
  */
-void fcd_reset_application(void);
+extern void fcd_reset_application(void);
 
 
 # ifdef __cplusplus
