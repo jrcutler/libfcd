@@ -306,7 +306,7 @@ char * fcd_query(FCD *dev, char *str, int len)
 {
 	/* query device */
 	len = fcd_get(dev, FCD_CMD_QUERY, str, len);
-	if (!len)
+	if (len <= 0)
 	{
 		/* query failed */
 		return NULL;
