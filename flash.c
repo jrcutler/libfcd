@@ -136,7 +136,7 @@ int fcd_bl_flash_write(FCD *dev, const unsigned char *data, size_t size)
 }
 
 
-/*! \copydetails fcd_path_fn
+/*! \copydetails fcd_path_callback
  * \brief Upgrade each device's firmware
  */
 int funcube_flash(const char *path, void *context)

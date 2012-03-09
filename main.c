@@ -10,7 +10,7 @@
 #include "fcd.h" /* FCD, fcd_for_each, fcd_open, fcd_close, fcd_query */
 
 
-/*! \copydetails fcd_path_fn
+/*! \copydetails fcd_path_callback
  * \brief Output simple diagnostics for each device
  */
 int funcube_debug(const char *path, void *context)

@@ -205,7 +205,7 @@ int fcd_set(FCD *dev, unsigned char cmd, const void *data, unsigned char len)
 }
 
 
-/*! \copydetails fcd_path_fn
+/*! \copydetails fcd_path_callback
  * \brief Reset FUNcube dongle
  * \note \p context points to specified reset command
  */
@@ -233,7 +233,7 @@ int fcd_reset(const char *path, void *context)
  */
 
 
-int fcd_for_each(fcd_path_fn *fn, void *context)
+int fcd_for_each(fcd_path_callback *fn, void *context)
 {
 	struct hid_device_info *devs, *current;
 	int result = 0;
