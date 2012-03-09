@@ -132,6 +132,18 @@ extern int fcd_bl_read_block(FCD *dev, unsigned char *block);
 extern int fcd_bl_write_block(FCD *dev, const unsigned char *block);
 
 /*!
+ * \brief Write new application to FUNcube dongle
+ * \param[in,out] dev  open \ref FCD
+ * \param[in]     data flash image data
+ * \param         size size of \p data
+ * \pre FUNcube dongle must be in bootloader
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern int fcd_bl_flash_write(FCD *dev, const unsigned char *data,
+	unsigned int size);
+
+/*!
  * \brief Reset to bootloader
  */
 extern void fcd_reset_bootloader(void);

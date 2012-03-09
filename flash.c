@@ -87,55 +87,6 @@ void *fread_all(FILE *stream, unsigned long *len)
 }
 
 
-/*!
- * \brief Write new application to FUNcube dongle
- * \param[in,out] dev  open \ref FCD
- * \param[in]     data flash image data
- * \param         size size of \p data
- * \pre FUNcube dongle must be in bootloader
- * \retval 0     success
- * \retval non-0 failure
- */
-int fcd_bl_flash_write(FCD *dev, const unsigned char *data, size_t size)
-{
-	unsigned int start, end, addr;
-	/* get flash range */
-	if (fcd_bl_get_address_range(dev, &start, &end))
-	{
-		return -1;
-	}
-	/* sanity check range */
-	if (start >= end || (end - start) % 48)
-	{
-		return -2;
-	}
-	/* ensure firmware image is large enough */
-	if (end > size)
-	{
-		return -3;
-	}
-	/* erase existing application */
-	if (fcd_bl_erase_application(dev))
-	{
-		return -4;
-	}
-	/* set address to start of flash */
-	if (fcd_bl_set_address(dev, start))
-	{
-		return -5;
-	}
-	/* write flash */
-	for (addr = start; addr < end; addr += 48)
-	{
-		if (fcd_bl_write_block(dev, data+addr))
-		{
-			return -6;
-		}
-	}
-	return 0;
-}
-
-
 /*! \copydetails fcd_path_callback
  * \brief Upgrade each device's firmware
  */
