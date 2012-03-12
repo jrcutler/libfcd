@@ -47,6 +47,7 @@ AS_IF([test "x$LINUX" = "xyes" ],
   [PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0)])
 
 ## checks for header files
+AC_CHECK_HEADERS([getopt.h])
 
 ## check for typedefs, structures, and compiler characteristics
 AC_C_INLINE
@@ -54,7 +55,7 @@ AC_C_BIGENDIAN
 AC_TYPE_UINT32_T
 
 ## check for library functions
-AC_CHECK_FUNCS([memset])
+AC_CHECK_FUNCS([getopt_long memset])
 AC_FUNC_MALLOC
 AX_SHORT_SLEEP
 

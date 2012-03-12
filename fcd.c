@@ -407,22 +407,17 @@ int fcd_bl_flash_write(FCD *dev, const unsigned char *data, unsigned int size)
 	{
 		return -3;
 	}
-	/* erase existing application */
-	if (fcd_bl_erase_application(dev))
-	{
-		return -4;
-	}
 	/* set address to start of flash */
 	if (fcd_bl_set_address(dev, start))
 	{
-		return -5;
+		return -4;
 	}
 	/* write flash (in 48-byte blocks) */
 	for (addr = start; addr < end; addr += 48)
 	{
 		if (fcd_bl_write_block(dev, data+addr))
 		{
-			return -6;
+			return -5;
 		}
 	}
 	return 0;
@@ -450,7 +445,7 @@ int fcd_bl_flash_verify(FCD *dev, const unsigned char *data, unsigned int size)
 	/* set address to start of flash */
 	if (fcd_bl_set_address(dev, start))
 	{
-		return -5;
+		return -4;
 	}
 	/* verify flash (in 48-byte blocks) */
 	for (addr = start; addr < end; addr += 48)
