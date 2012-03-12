@@ -248,7 +248,7 @@ static int funcube_flash(const char *path, void *context)
 
 
 /*! \brief Print an error and exit */
-static void error(void)
+static void die(void)
 {
 	fputs("Try `fcd-flash --help' for more information.\n", stderr);
 	exit(EXIT_FAILURE);
@@ -357,7 +357,7 @@ int main(int argc, char **argv)
 				break;
 
 			default:
-				error();
+				die();
 				break;
 		}
 	}
@@ -366,21 +366,21 @@ int main(int argc, char **argv)
 	if (optind != argc)
 	{
 		fprintf(stderr, "extra operand: %s\n", argv[optind]);
-		error();
+		die();
 	}
 
 	/* verify an action was requested */
 	if (!context.actions)
 	{
 		fputs("Nothing to do\n", stderr);
-		error();
+		die();
 	}
 
 	/* verify image filename is provided for write & verify */
 	if ((context.actions & (ACTION_WRITE|ACTION_VERIFY)) && (NULL == filename))
 	{
 		fputs("No image file specfied\n", stderr);
-		error();
+		die();
 	}
 
 	/* read image */
