@@ -196,6 +196,24 @@ extern int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain);
 extern int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain);
 
 /*!
+ * \brief Set frequency (in Hz)
+ * \param[in,out] dev  open \ref FCD
+ * \param         freq frequency (in Hz)
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern int fcd_set_frequency_Hz(FCD *dev, unsigned int freq);
+
+/*!
+ * \brief Get frequency (in Hz)
+ * \param[in,out] dev  open \ref FCD
+ * \param[out]    freq frequency output (in Hz)
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq);
+
+/*!
  * \brief Reset to bootloader
  */
 extern void fcd_reset_bootloader(void);

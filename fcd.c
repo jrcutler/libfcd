@@ -577,6 +577,29 @@ int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain)
 }
 
 
+int fcd_set_frequency_Hz(FCD *dev, unsigned int freq)
+{
+	uint32_t fHz = convert_le_u32(freq);
+	if (fcd_set(dev, FCD_CMD_SET_FREQUENCY_HZ, &fHz, sizeof(fHz)) != sizeof(fHz))
+	{
+		return -1;
+	}
+	return 0;
+}
+
+
+int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq)
+{
+	uint32_t fHz;
+	if (fcd_get(dev, FCD_CMD_GET_FREQUENCY_HZ, &fHz, sizeof(fHz)) != sizeof(fHz))
+	{
+		return -1;
+	}
+	*freq = convert_le_u32(fHz);
+	return 0;
+}
+
+
 void fcd_reset_bootloader(void)
 {
 	unsigned char cmd = FCD_CMD_RESET_BOOTLOADER;
