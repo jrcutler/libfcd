@@ -176,6 +176,26 @@ extern int fcd_set_dc_correction(FCD *dev, int i, int q);
 extern int fcd_get_dc_correction(FCD *dev, int *i, int *q);
 
 /*!
+ * \brief Set I/Q phase and gain balance values
+ * \param[in,out] dev   open \ref FCD
+ * \param         phase phase correction value (-32768..32767)
+ * \param         gain  gain correction value (0..65535)
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain);
+
+/*!
+ * \brief Get I/Q phase and gain balance values
+ * \param[in,out] dev   open \ref FCD
+ * \param[out]    phase phase correction value output
+ * \param[out]    gain  gain correction value output
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain);
+
+/*!
  * \brief Reset to bootloader
  */
 extern void fcd_reset_bootloader(void);

@@ -527,6 +527,56 @@ int fcd_get_dc_correction(FCD *dev, int *i, int *q)
 }
 
 
+int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain)
+{
+	struct {
+		int16_t phase;
+		uint16_t gain;
+	} correction;
+
+	correction.phase = phase;
+	correction.gain = gain;
+	if ((phase != correction.phase) || (gain != correction.gain))
+	{
+		/* value out of range */
+		return -1;
+	}
+	correction.phase = (int16_t) convert_le_u16((uint16_t) correction.phase);
+	correction.gain = (int16_t) convert_le_u16((uint16_t) correction.gain);
+
+	if (fcd_set(dev, FCD_CMD_SET_IQ_CORR, &correction, sizeof(correction)) != sizeof(correction))
+	{
+		return -1;
+	}
+	return 0;
+}
+
+
+int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain)
+{
+	struct {
+		int16_t phase;
+		uint16_t gain;
+	} correction;
+
+	if (fcd_get(dev, FCD_CMD_GET_IQ_CORR, &correction, sizeof(correction)) != sizeof(correction))
+	{
+		return -1;
+	}
+
+	if (NULL != phase)
+	{
+		*phase = (int16_t) convert_le_u16((uint16_t) correction.phase);
+	}
+	if (NULL != gain)
+	{
+		*gain = convert_le_u16((uint16_t) correction.gain);
+	}
+
+	return 0;
+}
+
+
 void fcd_reset_bootloader(void)
 {
 	unsigned char cmd = FCD_CMD_RESET_BOOTLOADER;
