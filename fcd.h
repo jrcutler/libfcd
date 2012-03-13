@@ -156,6 +156,26 @@ extern int fcd_bl_flash_verify(FCD *dev, const unsigned char *data,
 	unsigned int size);
 
 /*!
+ * \brief Set DC offset correction values
+ * \param[in,out] dev  open \ref FCD
+ * \param         i    DC I correction value (-32768..32767)
+ * \param         q    DC Q correction value (-32768..32767)
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern int fcd_set_dc_correction(FCD *dev, int i, int q);
+
+/*!
+ * \brief Get DC offset correction (I/Q) values
+ * \param[in,out] dev  open \ref FCD
+ * \param[out]    i    DC I correction value output
+ * \param[out]    q    DC Q correction value output
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern int fcd_get_dc_correction(FCD *dev, int *i, int *q);
+
+/*!
  * \brief Reset to bootloader
  */
 extern void fcd_reset_bootloader(void);

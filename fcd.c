@@ -99,6 +99,25 @@ inline uint32_t convert_le_u32(uint32_t v)
 }
 
 
+/*!
+ * \brief Convert 16-bit integer to/from little-endian
+ * \param v value
+ * \returns \p v on little-endian systems or byte-swapped \p v on big-endian
+ * systems
+ */
+inline uint16_t convert_le_u16(uint16_t v)
+{
+#ifdef WORDS_BIGENDIAN
+	/* big endian */
+	return ((v & 0xff00) >>  8) |
+	       ((v & 0x00ff) <<  8);
+#else
+	/* little endian */
+	return v;
+#endif
+}
+
+
 /*! \brief Perform a get command
  * \param[in,out] dev  open \ref FCD
  * \param         cmd  command ID
@@ -460,6 +479,50 @@ int fcd_bl_flash_verify(FCD *dev, const unsigned char *data, unsigned int size)
 			return 1;
 		}
 	}
+	return 0;
+}
+
+
+int fcd_set_dc_correction(FCD *dev, int i, int q)
+{
+	int16_t correction[2];
+
+	correction[0] = i;
+	correction[1] = q;
+	if ((i != correction[0]) || (q != correction[1]))
+	{
+		/* value out of range */
+		return -1;
+	}
+	correction[0] = (int16_t) convert_le_u16((uint16_t) correction[0]);
+	correction[1] = (int16_t) convert_le_u16((uint16_t) correction[1]);
+
+	if (fcd_set(dev, FCD_CMD_SET_DC_CORR, &correction, sizeof(correction)) != sizeof(correction))
+	{
+		return -1;
+	}
+	return 0;
+}
+
+
+int fcd_get_dc_correction(FCD *dev, int *i, int *q)
+{
+	int16_t correction[2];
+
+	if (fcd_get(dev, FCD_CMD_GET_DC_CORR, &correction, sizeof(correction)) != sizeof(correction))
+	{
+		return -1;
+	}
+
+	if (NULL != i)
+	{
+		*i = (int16_t) convert_le_u16((uint16_t) correction[0]);
+	}
+	if (NULL != q)
+	{
+		*q = (int16_t) convert_le_u16((uint16_t) correction[1]);
+	}
+
 	return 0;
 }
 
