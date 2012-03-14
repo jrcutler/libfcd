@@ -32,6 +32,8 @@ if MACOSX
 endif
 if WINDOWS
   libfcd_la_SOURCES += hidapi/hid-windows.c
+  libfcd_la_LIBADD  += -lsetupapi
+  libfcd_la_LDFLAGS += -no-undefined
 endif
 
 ##

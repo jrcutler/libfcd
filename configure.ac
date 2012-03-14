@@ -20,7 +20,8 @@ LINUX="no"
 AS_CASE([$host],
   [*-*-linux*],  [LINUX="yes"],
   [*-*-darwin*], [MACOSX="yes"],
-  [*-*-win*],    [WINDOWS="yes"],
+  [*-*-win*],    [WINDOWS="yes" ; ac_cv_func_malloc_0_nonnull=yes],
+  [*-*-mingw*],  [WINDOWS="yes" ; ac_cv_func_malloc_0_nonnull=yes],
   []
 )
 AM_CONDITIONAL([LINUX], [ test "x$LINUX" = "xyes" ])

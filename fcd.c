@@ -14,9 +14,6 @@
 # ifdef HAVE_UNISTD_H
 #  include <unistd.h> /* usleep */
 # endif
-# define ms_sleep(ms) usleep((ms)*SHORT_SLEEP_FACTOR)
-#elif defined(HAVE_NAP)
-# define ms_sleep(ms) nap((ms)*SHORT_SLEEP_FACTOR)
 #endif
 #include "hidapi/hidapi.h" /* hid_* */
 #include "fcd.h" /* FCD */
@@ -118,6 +115,27 @@ inline uint16_t convert_le_u16(uint16_t v)
 }
 
 
+/*!
+ * \brief Sleep for some number of milliseconds
+ * \param ms number of milliseconds to sleep
+ * \note POSIX allows for usleep to return without delay for sleep >= 1 second
+ */
+void ms_sleep(unsigned int ms)
+{
+#ifdef HAVE_USLEEP
+	unsigned int t;
+	for (t = ms; t >= 1000; t -= 1000)
+	{
+		usleep(500*SHORT_SLEEP_FACTOR);
+		usleep(500*SHORT_SLEEP_FACTOR);
+	}
+	usleep(t*SHORT_SLEEP_FACTOR);
+#elif defined(HAVE_NAP)
+	nap(ms*SHORT_SLEEP_FACTOR);
+#endif
+}
+
+
 /*! \brief Perform a get command
  * \param[in,out] dev  open \ref FCD
  * \param         cmd  command ID
@@ -142,10 +160,12 @@ int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len)
 	/* send get request */
 	buffer.command.report_id = 0;
 	buffer.command.command = cmd;
-	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, 2) == 2)
+	/*! \bug Windows: hid_write() always returns 65 */
+	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, 2) >= 2)
 	{
 		/* receive get response */
-		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, len+2) == len+2)
+		/*! \bug Windows: hid_read() always returns 64 */
+		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, len+2) >= len+2)
 		{
 			/* validate response */
 			if ((buffer.response.command == cmd) &&
@@ -192,11 +212,13 @@ int fcd_set_skip(FCD *dev, unsigned char cmd, const void *data,
 	memset(&buffer.command.data, 0, skip);
 	/* copy in data */
 	memcpy(&(buffer.command.data[skip]), data, len);
-	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, len+2+skip) ==
+	/*! \bug Windows: hid_write() always returns 65 */
+	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, len+2+skip) >=
 		len+2+skip)
 	{
 		/* receive set response */
-		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, 2) == 2)
+		/*! \bug Windows: hid_read() always returns 64 */
+		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, 2) >= 2)
 		{
 			/* validate response */
 			if ((buffer.response.command == cmd) &&
@@ -252,7 +274,7 @@ int fcd_reset(const char *path, void *context)
  */
 
 
-int fcd_for_each(fcd_path_callback *fn, void *context)
+API int fcd_for_each(fcd_path_callback *fn, void *context)
 {
 	struct hid_device_info *devs, *current;
 	int result = 0;
@@ -282,7 +304,7 @@ int fcd_for_each(fcd_path_callback *fn, void *context)
 }
 
 
-FCD * fcd_open(const char *path)
+API FCD * fcd_open(const char *path)
 {
 	FCD *dev;
 
@@ -311,7 +333,7 @@ FCD * fcd_open(const char *path)
 }
 
 
-void fcd_close(FCD *dev)
+API void fcd_close(FCD *dev)
 {
 	if (NULL != dev)
 	{
@@ -321,7 +343,7 @@ void fcd_close(FCD *dev)
 }
 
 
-char * fcd_query(FCD *dev, char *str, int len)
+API char * fcd_query(FCD *dev, char *str, int len)
 {
 	/* query device */
 	len = fcd_get(dev, FCD_CMD_QUERY, str, len);
@@ -336,13 +358,13 @@ char * fcd_query(FCD *dev, char *str, int len)
 }
 
 
-int fcd_bl_erase_application(FCD *dev)
+API int fcd_bl_erase_application(FCD *dev)
 {
 	return fcd_set(dev, FCD_CMD_ERASE_APPLICATION, NULL, 0);
 }
 
 
-int fcd_bl_set_address(FCD *dev, unsigned int addr)
+API int fcd_bl_set_address(FCD *dev, unsigned int addr)
 {
 	int result;
 	uint32_t address;
@@ -361,7 +383,8 @@ int fcd_bl_set_address(FCD *dev, unsigned int addr)
 }
 
 
-int fcd_bl_get_address_range(FCD *dev, unsigned int *start, unsigned int *end)
+API int fcd_bl_get_address_range(FCD *dev, unsigned int *start,
+	unsigned int *end)
 {
 	int result;
 	uint32_t range[2];
@@ -387,7 +410,7 @@ int fcd_bl_get_address_range(FCD *dev, unsigned int *start, unsigned int *end)
 }
 
 
-int fcd_bl_read_block(FCD *dev, unsigned char *block)
+API int fcd_bl_read_block(FCD *dev, unsigned char *block)
 {
 	if (fcd_get(dev, FCD_CMD_READ_BLOCK, block, 48) != 48)
 	{
@@ -397,7 +420,7 @@ int fcd_bl_read_block(FCD *dev, unsigned char *block)
 }
 
 
-int fcd_bl_write_block(FCD *dev, const unsigned char *block)
+API int fcd_bl_write_block(FCD *dev, const unsigned char *block)
 {
 	/* use 1 byte skip, as write block data starts at 3 for unknown reason */
 	if (fcd_set_skip(dev, FCD_CMD_WRITE_BLOCK, block, 48, 1) != 48)
@@ -408,7 +431,8 @@ int fcd_bl_write_block(FCD *dev, const unsigned char *block)
 }
 
 
-int fcd_bl_flash_write(FCD *dev, const unsigned char *data, unsigned int size)
+API int fcd_bl_flash_write(FCD *dev, const unsigned char *data,
+	unsigned int size)
 {
 	unsigned int start, end, addr;
 	/* get flash range */
@@ -443,7 +467,8 @@ int fcd_bl_flash_write(FCD *dev, const unsigned char *data, unsigned int size)
 }
 
 
-int fcd_bl_flash_verify(FCD *dev, const unsigned char *data, unsigned int size)
+API int fcd_bl_flash_verify(FCD *dev, const unsigned char *data,
+	unsigned int size)
 {
 	unsigned int start, end, addr;
 	/* get flash range */
@@ -483,7 +508,7 @@ int fcd_bl_flash_verify(FCD *dev, const unsigned char *data, unsigned int size)
 }
 
 
-int fcd_set_dc_correction(FCD *dev, int i, int q)
+API int fcd_set_dc_correction(FCD *dev, int i, int q)
 {
 	int16_t correction[2];
 
@@ -505,7 +530,7 @@ int fcd_set_dc_correction(FCD *dev, int i, int q)
 }
 
 
-int fcd_get_dc_correction(FCD *dev, int *i, int *q)
+API int fcd_get_dc_correction(FCD *dev, int *i, int *q)
 {
 	int16_t correction[2];
 
@@ -527,7 +552,7 @@ int fcd_get_dc_correction(FCD *dev, int *i, int *q)
 }
 
 
-int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain)
+API int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain)
 {
 	struct {
 		int16_t phase;
@@ -552,7 +577,7 @@ int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain)
 }
 
 
-int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain)
+API int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain)
 {
 	struct {
 		int16_t phase;
@@ -577,7 +602,7 @@ int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain)
 }
 
 
-int fcd_set_frequency_Hz(FCD *dev, unsigned int freq)
+API int fcd_set_frequency_Hz(FCD *dev, unsigned int freq)
 {
 	uint32_t fHz = convert_le_u32(freq);
 	if (fcd_set(dev, FCD_CMD_SET_FREQUENCY_HZ, &fHz, sizeof(fHz)) != sizeof(fHz))
@@ -588,7 +613,7 @@ int fcd_set_frequency_Hz(FCD *dev, unsigned int freq)
 }
 
 
-int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq)
+API int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq)
 {
 	uint32_t fHz;
 	if (fcd_get(dev, FCD_CMD_GET_FREQUENCY_HZ, &fHz, sizeof(fHz)) != sizeof(fHz))
@@ -600,17 +625,17 @@ int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq)
 }
 
 
-void fcd_reset_bootloader(void)
+API void fcd_reset_bootloader(void)
 {
 	unsigned char cmd = FCD_CMD_RESET_BOOTLOADER;
 	fcd_for_each(fcd_reset, &cmd);
-	ms_sleep(1000);
+	ms_sleep(1500);
 }
 
 
-void fcd_reset_application(void)
+API void fcd_reset_application(void)
 {
 	unsigned char cmd = FCD_CMD_RESET_APPLICATION;
 	fcd_for_each(fcd_reset, &cmd);
-	ms_sleep(1000);
+	ms_sleep(1500);
 }

@@ -4,6 +4,12 @@
 #ifndef FCD_H
 # define FCD_H
 
+#ifdef _WIN32
+#define API __declspec(dllexport) _stdcall
+#else
+#define API
+#endif
+
 # ifdef __cplusplus
 extern "C"
 {
@@ -51,7 +57,7 @@ typedef int (fcd_path_callback)(const char *path, void *context);
  * \retval non-0 failure
  * \note Terminates on the first call to \p fn that fails.
  */
-extern int fcd_for_each(fcd_path_callback *fn, void *context);
+extern API int fcd_for_each(fcd_path_callback *fn, void *context);
 
 /*!
  * \brief Open a FUNcube dongle device
@@ -59,7 +65,7 @@ extern int fcd_for_each(fcd_path_callback *fn, void *context);
  * \retval non-NULL pointer to new open \ref FCD
  * \retval NULL     error
  */
-extern FCD * fcd_open(const char *path);
+extern API FCD * fcd_open(const char *path);
 
 /*!
  * \brief Close a FUNcube dongle device
@@ -68,7 +74,7 @@ extern FCD * fcd_open(const char *path);
  * \retval NULL     error
  * \post \p dev is no longer valid
  */
-extern void fcd_close(FCD *dev);
+extern API void fcd_close(FCD *dev);
 
 /*!
  * \brief Query a FUNcube dongle device
@@ -78,7 +84,7 @@ extern void fcd_close(FCD *dev);
  * \retval NULL     error (\p str has not changed)
  * \retval non-NULL success (\p str)
  */
-extern char * fcd_query(FCD *dev, char *str, int len);
+extern API char * fcd_query(FCD *dev, char *str, int len);
 
 /*!
  * \brief Erase FUNcube dongle application code
@@ -87,7 +93,7 @@ extern char * fcd_query(FCD *dev, char *str, int len);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_bl_erase_application(FCD *dev);
+extern API int fcd_bl_erase_application(FCD *dev);
 
 /*!
  * \brief Set FUNcube dongle flash address
@@ -97,7 +103,7 @@ extern int fcd_bl_erase_application(FCD *dev);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_bl_set_address(FCD *dev, unsigned int addr);
+extern API int fcd_bl_set_address(FCD *dev, unsigned int addr);
 
 /*!
  * \brief Get FUNcube dongle flash address range
@@ -108,7 +114,7 @@ extern int fcd_bl_set_address(FCD *dev, unsigned int addr);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_bl_get_address_range(FCD *dev, unsigned int *start,
+extern API int fcd_bl_get_address_range(FCD *dev, unsigned int *start,
 	unsigned int *end);
 
 /*!
@@ -119,7 +125,7 @@ extern int fcd_bl_get_address_range(FCD *dev, unsigned int *start,
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_bl_read_block(FCD *dev, unsigned char *block);
+extern API int fcd_bl_read_block(FCD *dev, unsigned char *block);
 
 /*!
  * \brief Write block to FUNcube dongle
@@ -129,7 +135,7 @@ extern int fcd_bl_read_block(FCD *dev, unsigned char *block);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_bl_write_block(FCD *dev, const unsigned char *block);
+extern API int fcd_bl_write_block(FCD *dev, const unsigned char *block);
 
 /*!
  * \brief Write new application to FUNcube dongle
@@ -140,7 +146,7 @@ extern int fcd_bl_write_block(FCD *dev, const unsigned char *block);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_bl_flash_write(FCD *dev, const unsigned char *data,
+extern API int fcd_bl_flash_write(FCD *dev, const unsigned char *data,
 	unsigned int size);
 
 /*!
@@ -152,7 +158,7 @@ extern int fcd_bl_flash_write(FCD *dev, const unsigned char *data,
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_bl_flash_verify(FCD *dev, const unsigned char *data,
+extern API int fcd_bl_flash_verify(FCD *dev, const unsigned char *data,
 	unsigned int size);
 
 /*!
@@ -163,7 +169,7 @@ extern int fcd_bl_flash_verify(FCD *dev, const unsigned char *data,
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_set_dc_correction(FCD *dev, int i, int q);
+extern API int fcd_set_dc_correction(FCD *dev, int i, int q);
 
 /*!
  * \brief Get DC offset correction (I/Q) values
@@ -173,7 +179,7 @@ extern int fcd_set_dc_correction(FCD *dev, int i, int q);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_get_dc_correction(FCD *dev, int *i, int *q);
+extern API int fcd_get_dc_correction(FCD *dev, int *i, int *q);
 
 /*!
  * \brief Set I/Q phase and gain balance values
@@ -183,7 +189,7 @@ extern int fcd_get_dc_correction(FCD *dev, int *i, int *q);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain);
+extern API int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain);
 
 /*!
  * \brief Get I/Q phase and gain balance values
@@ -193,7 +199,7 @@ extern int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain);
+extern API int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain);
 
 /*!
  * \brief Set frequency (in Hz)
@@ -202,7 +208,7 @@ extern int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_set_frequency_Hz(FCD *dev, unsigned int freq);
+extern API int fcd_set_frequency_Hz(FCD *dev, unsigned int freq);
 
 /*!
  * \brief Get frequency (in Hz)
@@ -211,17 +217,17 @@ extern int fcd_set_frequency_Hz(FCD *dev, unsigned int freq);
  * \retval 0     success
  * \retval non-0 failure
  */
-extern int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq);
+extern API int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq);
 
 /*!
  * \brief Reset to bootloader
  */
-extern void fcd_reset_bootloader(void);
+extern API void fcd_reset_bootloader(void);
 
 /*!
  * \brief Reset to application
  */
-extern void fcd_reset_application(void);
+extern API void fcd_reset_application(void);
 
 
 # ifdef __cplusplus
