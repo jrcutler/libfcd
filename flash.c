@@ -266,12 +266,12 @@ static void version(void)
 /*! \brief Print usage and exit */
 static void usage(void)
 {
-	puts("Usage: fcd-flash [OPTIONS]...");
+	puts("Usage: fcd-flash [OPTION]...");
 	puts("Perform firmware operations on all present FUNcube dongles.");
 	puts("");
 	puts("Mandatory arguments to long options are mandatory for short options too.");
 	puts("      --flash=FILE  perform a full flash upgrade from firmware image");
-	puts("                      equivalent to `-rew -i FILE`");
+	puts("                    (equivalent to `-rew -i FILE`)");
 	puts("  -i, --input=FILE  read image from FILE");
 	puts("  -r, --reset       reset to/from bootloader");
 	puts("  -R, --no-reset    do not reset");
@@ -285,12 +285,12 @@ static void usage(void)
 	puts("      --version     output version information and exit");
 	puts("");
 	puts("Examples:");
-	puts("  fcd-flash --flash=export18b.bin");
-	puts("      Write `export18b.bin` to FUNcube dongle");
-	puts("");
-	puts("  fcd-flash --flash=export18b.bin --no-erase --no-write");
-	puts("  fcd-flash -rvi export18b.bin");
-	puts("        (equivalent) Reset and validate flash matches `export18b.bin`");
+	puts("fcd-flash --flash=export18b.bin");
+	puts("  Write `export18b.bin` to FUNcube dongle");
+	puts("fcd-flash --flash=export18b.bin --no-erase --no-write");
+	puts("  Reset and verify flash matches `export18b.bin`");
+	puts("fcd-flash -rvi export18b.bin");
+	puts("  (equivalent) Reset and verify flash matches `export18b.bin`");
 
 	exit(EXIT_SUCCESS);
 }
