@@ -53,6 +53,8 @@ AC_CHECK_HEADERS([getopt.h])
 ## check for typedefs, structures, and compiler characteristics
 AC_C_INLINE
 AC_C_BIGENDIAN
+AC_TYPE_INT16_T
+AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 
 ## check for library functions
