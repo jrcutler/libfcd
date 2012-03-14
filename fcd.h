@@ -223,14 +223,16 @@ extern API int fcd_set_frequency_Hz(FCD *dev, unsigned int freq);
 extern API int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq);
 
 /*!
- * \brief Reset to bootloader
+ * \brief Reset all FUNcube dongles to bootloader
+ * \param delay_ms delay time after reset (in ms)
  */
-extern API void fcd_reset_bootloader(void);
+extern API void fcd_reset_bootloader(unsigned int delay_ms);
 
 /*!
- * \brief Reset to application
+ * \brief Reset all FUNcube dongles to application
+ * \param delay_ms delay time after reset (in ms)
  */
-extern API void fcd_reset_application(void);
+extern API void fcd_reset_application(unsigned int delay_ms);
 
 
 # ifdef __cplusplus

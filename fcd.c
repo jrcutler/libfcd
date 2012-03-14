@@ -625,17 +625,17 @@ API int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq)
 }
 
 
-API void fcd_reset_bootloader(void)
+API void fcd_reset_bootloader(unsigned int delay_ms)
 {
 	unsigned char cmd = FCD_CMD_RESET_BOOTLOADER;
 	fcd_for_each(fcd_reset, &cmd);
-	ms_sleep(1500);
+	ms_sleep(delay_ms);
 }
 
 
-API void fcd_reset_application(void)
+API void fcd_reset_application(unsigned int delay_ms)
 {
 	unsigned char cmd = FCD_CMD_RESET_APPLICATION;
 	fcd_for_each(fcd_reset, &cmd);
-	ms_sleep(1500);
+	ms_sleep(delay_ms);
 }

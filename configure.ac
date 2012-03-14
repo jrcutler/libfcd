@@ -56,7 +56,7 @@ AC_C_BIGENDIAN
 AC_TYPE_UINT32_T
 
 ## check for library functions
-AC_CHECK_FUNCS([getopt_long memset])
+AC_CHECK_FUNCS([getopt_long memset strtoul])
 AC_FUNC_MALLOC
 AX_SHORT_SLEEP
 

@@ -54,6 +54,8 @@ typedef struct
 {
 	/*! \brief action flags set by command line */
 	unsigned int actions;
+	/*! \brief reset delay (in ms) */
+	unsigned int delay;
 	/*! \brief Flash data */
 	unsigned char *data;
 	/*! \brief Flash data size */
@@ -273,7 +275,8 @@ static void usage(void)
 	puts("      --flash=FILE  perform a full flash upgrade from firmware image");
 	puts("                    (equivalent to `-rew -i FILE`)");
 	puts("  -i, --input=FILE  read image from FILE");
-	puts("  -r, --reset       reset to/from bootloader");
+	puts("  -r, --reset[=MS]  reset to/from bootloader with a MS millisecond");
+	puts("                    delay (default is 1500 ms)");
 	puts("  -R, --no-reset    do not reset");
 	puts("  -e, --erase       erase flash");
 	puts("  -E, --no-erase    do not erase flash");
@@ -289,8 +292,8 @@ static void usage(void)
 	puts("  Write `export18b.bin` to FUNcube dongle");
 	puts("fcd-flash --flash=export18b.bin --no-erase --no-write");
 	puts("  Reset and verify flash matches `export18b.bin`");
-	puts("fcd-flash -rvi export18b.bin");
-	puts("  (equivalent) Reset and verify flash matches `export18b.bin`");
+	puts("fcd-flash -r1000 -vi export18b.bin");
+	puts("  Reset with 1 second delay and verify flash matches `export18b.bin`");
 
 	exit(EXIT_SUCCESS);
 }
@@ -308,10 +311,10 @@ int main(int argc, char **argv)
 	int result = EXIT_SUCCESS;
 	int c, index;
 	char *filename = NULL;
-	flash_context context = {0, NULL, 0};
+	flash_context context = {0, 1500, NULL, 0};
 
 	/* parse command line */
-	while ((c = getopt_long(argc, argv, "i:rReEwWvV", long_options, &index)) != -1)
+	while ((c = getopt_long(argc, argv, "i:r::ReEwWvV", long_options, &index)) != -1)
 	{
 		switch (c)
 		{
@@ -320,6 +323,10 @@ int main(int argc, char **argv)
 				break;
 			case 'r':
 				context.actions |= ACTION_RESET;
+				if (NULL != optarg)
+				{
+					context.delay = strtoul(optarg, NULL, 0);
+				}
 				break;
 			case 'R':
 				context.actions &= ~ACTION_RESET;
@@ -405,7 +412,7 @@ int main(int argc, char **argv)
 	/* enter bootloader */
 	if (context.actions & ACTION_RESET)
 	{
-		fcd_reset_bootloader();
+		fcd_reset_bootloader(context.delay);
 	}
 
 	/* erase/flash/verify all FUNcube dongles present */
@@ -417,7 +424,7 @@ int main(int argc, char **argv)
 	/* restart all FUNcube dongles */
 	if (context.actions & ACTION_RESET)
 	{
-		fcd_reset_application();
+		fcd_reset_application(context.delay);
 	}
 
 	if (NULL != context.data)
