@@ -4,6 +4,9 @@
 #ifndef FCD_H
 # define FCD_H
 
+/*! \def API
+ * \brief Necessary platform-specific declarations needed for library functions
+ */
 #ifdef _WIN32
 #define API __declspec(dllexport) _stdcall
 #else
