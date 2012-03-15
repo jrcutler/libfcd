@@ -273,7 +273,7 @@ static void usage(void)
 	puts("");
 	puts("Mandatory arguments to long options are mandatory for short options too.");
 	puts("      --flash=FILE  perform a full flash upgrade from firmware image");
-	puts("                    (equivalent to `-rew -i FILE`)");
+	puts("                    (equivalent to `-r -ew -iFILE`)");
 	puts("  -i, --input=FILE  read image from FILE");
 	puts("  -r, --reset[=MS]  reset to/from bootloader with a MS millisecond");
 	puts("                    delay (default is 1500 ms)");
@@ -325,7 +325,13 @@ int main(int argc, char **argv)
 				context.actions |= ACTION_RESET;
 				if (NULL != optarg)
 				{
-					context.delay = strtoul(optarg, NULL, 0);
+					char *end;
+					context.delay = strtoul(optarg, &end, 0);
+					if (end == optarg)
+					{
+						fprintf(stderr, "Invalid reset delay\n");
+						die();
+					}
 				}
 				break;
 			case 'R':
