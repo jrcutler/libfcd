@@ -74,7 +74,7 @@ static const struct option long_options[] =
 	/* options */
 	{"input",     required_argument, NULL, 'i'},
 	/* actions */
-	{"reset",     no_argument,       NULL, 'r'},
+	{"reset",     optional_argument, NULL, 'r'},
 	{"no-reset",  no_argument,       NULL, 'R'},
 	{"erase",     no_argument,       NULL, 'e'},
 	{"no-erase",  no_argument,       NULL, 'E'},
