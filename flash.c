@@ -276,7 +276,7 @@ static void usage(void)
 	puts("                    (equivalent to `-r -ew -iFILE`)");
 	puts("  -i, --input=FILE  read image from FILE");
 	puts("  -r, --reset[=MS]  reset to/from bootloader with a MS millisecond");
-	puts("                    delay (default is 1500 ms)");
+	puts("                    delay (default is 2000 ms)");
 	puts("  -R, --no-reset    do not reset");
 	puts("  -e, --erase       erase flash");
 	puts("  -E, --no-erase    do not erase flash");
@@ -311,7 +311,7 @@ int main(int argc, char **argv)
 	int result = EXIT_SUCCESS;
 	int c, index;
 	char *filename = NULL;
-	flash_context context = {0, 1500, NULL, 0};
+	flash_context context = {0, 2000, NULL, 0};
 
 	/* parse command line */
 	while ((c = getopt_long(argc, argv, "i:r::ReEwWvV", long_options, &index)) != -1)
