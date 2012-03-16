@@ -9,22 +9,27 @@ lib_LTLIBRARIES = libfcd.la
 ## Target Rules
 ##
 
-fcd_SOURCES = main.c
+AM_CPPFLAGS = -I$(top_srcdir)/include
+
+fcd_SOURCES = src/main.c
 fcd_LDADD = libfcd.la
 
-fcd_flash_SOURCES = flash.c
+fcd_flash_SOURCES = src/flash.c
 fcd_flash_LDADD = libfcd.la
 
 libfcd_la_SOURCES = \
-  fcd.c
+  lib/fcd.c
+libfcd_la_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  -I$(top_srcdir)/lib
 libfcd_la_LDFLAGS = \
   -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 libfcd_la_LIBADD  = @AX_SS_LIB@
 
 if LINUX
-  libfcd_la_SOURCES += hidapi/hid-libusb.c
-  libfcd_la_CPPFLAGS = $(LIBUSB_CFLAGS)
-  libfcd_la_LIBADD  += $(LIBUSB_LIBS)
+  libfcd_la_SOURCES  += hidapi/hid-libusb.c
+  libfcd_la_CPPFLAGS += $(LIBUSB_CFLAGS)
+  libfcd_la_LIBADD   += $(LIBUSB_LIBS)
 endif
 if MACOSX
   libfcd_la_SOURCES += hidapi/hid-macosx.c
@@ -41,10 +46,10 @@ endif
 ##
 
 include_HEADERS = \
-  fcd.h
+  include/fcd.h
 
 noinst_HEADERS = \
-  fcd_cmd.h \
+  lib/fcd_cmd.h \
   hidapi/hidapi.h
 
 pkgconfigdir = $(libdir)/pkgconfig
