@@ -1,5 +1,5 @@
 /*! \file
- * \brief FUNcube dongle interface implementation
+ * \brief FUNcube dongle common interface implementation
  */
 #ifdef HAVE_CONFIG_H
 # include <config.h>
