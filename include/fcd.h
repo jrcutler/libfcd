@@ -205,6 +205,24 @@ extern API int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain);
 extern API int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain);
 
 /*!
+ * \brief Set bias tee state
+ * \param[in,out] dev   open \ref FCD
+ * \param         state state (0 off, 1 on)
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern API int fcd_set_bias_tee(FCD *dev, unsigned char state);
+
+/*!
+ * \brief Get bias tee state
+ * \param[in,out] dev   open \ref FCD
+ * \param[out]    state state output (0 off, 1 on)
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern API int fcd_get_bias_tee(FCD *dev, unsigned char *state);
+
+/*!
  * \brief Set frequency (in Hz)
  * \param[in,out] dev  open \ref FCD
  * \param         freq frequency (in Hz)

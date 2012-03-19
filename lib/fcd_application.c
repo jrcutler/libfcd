@@ -110,6 +110,29 @@ API int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain)
 }
 
 
+API int fcd_set_bias_tee(FCD *dev, unsigned char state)
+{
+	unsigned char bias = state ? 1 : 0;
+	if (fcd_set(dev, FCD_CMD_SET_BIAS_TEE, &bias, sizeof(bias)) != sizeof(bias))
+	{
+		return -1;
+	}
+	return 0;
+}
+
+
+API int fcd_get_bias_tee(FCD *dev, unsigned char *state)
+{
+	unsigned char bias;
+	if (fcd_get(dev, FCD_CMD_GET_BIAS_TEE, &bias, sizeof(bias)) != sizeof(bias))
+	{
+		return -1;
+	}
+	*state = bias;
+	return 0;
+}
+
+
 API int fcd_set_frequency_Hz(FCD *dev, unsigned int freq)
 {
 	uint32_t fHz = convert_le_u32(freq);
