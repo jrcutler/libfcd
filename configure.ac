@@ -5,7 +5,7 @@ AC_PREREQ([2.68])
 AC_INIT([libfcd], [0.0], [justin.r.cutler@gmail.com])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([lib/fcd.c])
+AC_CONFIG_SRCDIR([lib/fcd_common.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 

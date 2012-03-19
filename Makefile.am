@@ -18,7 +18,9 @@ fcd_flash_SOURCES = src/flash.c
 fcd_flash_LDADD = libfcd.la
 
 libfcd_la_SOURCES = \
-  lib/fcd.c
+  lib/fcd_common.c \
+  lib/fcd_bootloader.c \
+  lib/fcd_application.c
 libfcd_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   -I$(top_srcdir)/lib
@@ -50,6 +52,7 @@ include_HEADERS = \
 
 noinst_HEADERS = \
   lib/fcd_cmd.h \
+  lib/fcd_common.h \
   hidapi/hidapi.h
 
 pkgconfigdir = $(libdir)/pkgconfig
