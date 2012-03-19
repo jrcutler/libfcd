@@ -8,7 +8,7 @@
  * \brief Necessary platform-specific declarations needed for library functions
  */
 #ifdef _WIN32
-#define API __declspec(dllexport) _stdcall
+#define API __declspec(dllexport) __stdcall
 #else
 #define API
 #endif
