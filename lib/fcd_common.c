@@ -5,6 +5,7 @@
 # include <config.h>
 #endif
 
+#include <errno.h> /* E*, errno */
 #include <stdlib.h> /* NULL, malloc, free */
 #include <string.h> /* memset, memcpy */
 #ifdef HAVE_USLEEP
@@ -40,7 +41,11 @@ int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len)
 
 	/*! \todo validate cmd */
 	/* do not allow NULL pointer for non-trivial get */
-	if (len && (NULL == data)) return -1;
+	if (len && (NULL == data))
+	{
+		errno = EFAULT;
+		return -1;
+	}
 	/* trim request length as needed */
 	if (len > sizeof(buffer.response.data))
 	{
@@ -65,6 +70,14 @@ int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len)
 				result = len;
 			}
 		}
+		else
+		{
+			errno = EIO;
+		}
+	}
+	else
+	{
+		errno = EIO;
 	}
 
 	return result;
@@ -79,7 +92,11 @@ int fcd_set_skip(FCD *dev, unsigned char cmd, const void *data,
 
 	/*! \todo validate cmd */
 	/* do not allow NULL pointer for non-trivial set */
-	if (len && (NULL == data)) return -1;
+	if (len && (NULL == data))
+	{
+		errno = EFAULT;
+		return -1;
+	}
 	/* trim request length as needed */
 	if (len > sizeof(buffer.command.data) - skip)
 	{
@@ -108,6 +125,14 @@ int fcd_set_skip(FCD *dev, unsigned char cmd, const void *data,
 				result = len;
 			}
 		}
+		else
+		{
+			errno = EIO;
+		}
+	}
+	else
+	{
+		errno = EIO;
 	}
 
 	return result;
@@ -191,6 +216,7 @@ API FCD * fcd_open(const char *path)
 			/* could not open HID device */
 			fcd_close(dev);
 			dev = NULL;
+			errno = EINVAL;
 		}
 	}
 
