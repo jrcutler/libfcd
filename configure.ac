@@ -48,7 +48,7 @@ AS_IF([test "x$LINUX" = "xyes" ],
   [PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0)])
 
 ## checks for header files
-AC_CHECK_HEADERS([getopt.h])
+AC_CHECK_HEADERS([getopt.h limits.h])
 
 ## check for typedefs, structures, and compiler characteristics
 AC_C_INLINE
