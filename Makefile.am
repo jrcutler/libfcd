@@ -48,7 +48,8 @@ endif
 ##
 
 include_HEADERS = \
-  include/fcd.h
+  include/fcd.h \
+  include/fcd_tuner.h
 
 noinst_HEADERS = \
   lib/fcd_cmd.h \

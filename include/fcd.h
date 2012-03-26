@@ -47,6 +47,50 @@ typedef struct FCD_impl FCD;
  */
 typedef int (fcd_path_callback)(const char *path, void *context);
 
+/*!
+ * \brief FUNcube dongle get/set 1-byte value identifiers
+ * \note Values, names, and descriptions are derived from \c FCHID008.zip.
+ */
+typedef enum
+{
+	/*! \brief LNA (front-end) gain (\ref FCD_TUNER_LNA_GAIN_ENUM) */
+	FCD_VALUE_LNA_GAIN = 0,
+	/*! \brief LNA enhance mode (\ref FCD_TUNER_LNA_ENHANCE_ENUM) */
+	FCD_VALUE_LNA_ENHANCE,
+	/*! \brief RF band selection (\ref FCD_TUNER_BAND_ENUM) */
+	FCD_VALUE_BAND,
+	/*! \brief RF filter selection (\ref FCD_TUNER_RF_FILTER_ENUM) */
+	FCD_VALUE_RF_FILTER,
+	/*! \brief Mixer gain (\ref FCD_TUNER_MIXER_GAIN_ENUM) */
+	FCD_VALUE_MIXER_GAIN,
+	/*! \brief Bias current (\ref FCD_TUNER_BIAS_CURRENT_ENUM) */
+	FCD_VALUE_BIAS_CURRENT,
+	/*! \brief Mixer filter selection (\ref FCD_TUNER_MIXER_FILTER_ENUM) */
+	FCD_VALUE_MIXER_FILTER,
+	/*! \brief IF amplifier 1 gain (\ref FCD_TUNER_IF_GAIN1_ENUM) */
+	FCD_VALUE_IF_GAIN1,
+	/*! \brief IF gain mode selection (\ref FCD_TUNER_IF_GAIN_MODE_ENUM) */
+	FCD_VALUE_IF_GAIN_MODE,
+	/*! \brief IF RC filter selection (\ref FCD_TUNER_IF_RC_FILTER_ENUM) */
+	FCD_VALUE_IF_RC_FILTER,
+	/*! \brief IF amplifier 2 gain (\ref FCD_TUNER_IF_GAIN2_ENUM) */
+	FCD_VALUE_IF_GAIN2,
+	/*! \brief IF amplifier 3 gain (\ref FCD_TUNER_IF_GAIN3_ENUM) */
+	FCD_VALUE_IF_GAIN3,
+	/*! \brief IF filter selection (\ref FCD_TUNER_IF_FILTER_ENUM) */
+	FCD_VALUE_IF_FILTER,
+	/*! \brief IF amplifier 4 gain (\ref FCD_TUNER_IF_GAIN4_ENUM) */
+	FCD_VALUE_IF_GAIN4,
+	/*! \brief IF amplifier 5 gain (\ref FCD_TUNER_IF_GAIN5_ENUM) */
+	FCD_VALUE_IF_GAIN5,
+	/*! \brief IF amplifier 6 gain (\ref FCD_TUNER_IF_GAIN6_ENUM) */
+	FCD_VALUE_IF_GAIN6,
+	/*! \brief Bias tee control (1 on, 0 off) */
+	FCD_VALUE_BIAS_TEE,
+	/*! \brief Undefined value identifier (for range checking) */
+	FCD_VALUE_UNDEFINED
+} FCD_VALUE_ENUM;
+
 
 /*
  * Functions
@@ -239,6 +283,26 @@ extern API int fcd_set_frequency_Hz(FCD *dev, unsigned int freq);
  * \retval non-0 failure
  */
 extern API int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq);
+
+/*!
+ * \brief Set 1-byte value
+ * \param[in,out] dev   open \ref FCD
+ * \param         id    value identifier
+ * \param         value new value
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern API int fcd_set_value(FCD *dev, FCD_VALUE_ENUM id, unsigned char value);
+
+/*!
+ * \brief Get 1-byte value
+ * \param[in,out] dev   open \ref FCD
+ * \param         id    value identifier
+ * \param[out]    value new value
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+extern API int fcd_get_value(FCD *dev, FCD_VALUE_ENUM id, unsigned char *value);
 
 /*!
  * \brief Reset all FUNcube dongles to bootloader
