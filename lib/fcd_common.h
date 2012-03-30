@@ -122,6 +122,20 @@ static inline uint16_t convert_le_u16(uint16_t v)
  */
 void ms_sleep(unsigned int ms);
 
+/*! \brief Perform an I/O command
+ * \param[in,out] dev   open \ref FCD
+ * \param         cmd   command ID
+ * \param         iskip number of input data bytes to skip (normally 0)
+ * \param[in]     idata input data pointer
+ * \param         ilen  input data length
+ * \param[out]    odata output data pointer
+ * \param         olen  output data length
+ * \retval 0     success
+ * \retval non-0 failure
+ */
+int fcd_io(FCD *dev, unsigned char cmd, unsigned char iskip, const void *idata,
+	unsigned char ilen, void *odata, unsigned char olen);
+
 /*! \brief Perform a get command
  * \param[in,out] dev  open \ref FCD
  * \param         cmd  command ID

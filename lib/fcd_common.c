@@ -34,108 +34,80 @@ void ms_sleep(unsigned int ms)
 }
 
 
-int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len)
+int fcd_io(FCD *dev, unsigned char cmd, unsigned char iskip, const void *idata,
+	unsigned char ilen, void *odata, unsigned char olen)
 {
 	fcd_buffer buffer;
 	int result = -1;
 
 	/*! \todo validate cmd */
-	/* do not allow NULL pointer for non-trivial get */
-	if (len && (NULL == data))
+	/* do not allow NULL pointer for non-trivial I/O */
+	if ((ilen && (NULL == idata)) || (olen && (NULL == odata)))
 	{
 		errno = EFAULT;
 		return -1;
 	}
-	/* trim request length as needed */
-	if (len > sizeof(buffer.response.data))
+	/* trim request lengths as needed */
+	if (ilen > sizeof(buffer.command.data) - iskip)
 	{
-		len = sizeof(buffer.response.data);
+		ilen = sizeof(buffer.command.data) - iskip;
+	}
+	if (olen > sizeof(buffer.response.data))
+	{
+		olen = sizeof(buffer.response.data);
 	}
 
-	/* send get request */
+	/* send request */
 	buffer.command.report_id = 0;
 	buffer.command.command = cmd;
+	/* pad skipped input byte(s) */
+	memset(&buffer.command.data, 0, iskip);
+	/* copy in data */
+	memcpy(&(buffer.command.data[iskip]), idata, ilen);
 	/*! \bug Windows: hid_write() always returns 65 */
-	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, 2) >= 2)
+	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, ilen+2+iskip) >=
+		ilen+2+iskip)
 	{
-		/* receive get response */
+		/* receive response */
 		/*! \bug Windows: hid_read() always returns 64 */
-		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, len+2) >= len+2)
+		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, olen+2) >= olen+2)
 		{
 			/* validate response */
 			if ((buffer.response.command == cmd) &&
 				(buffer.response.status == 1))
 			{
-				memcpy(data, &buffer.response.data, len);
-				result = len;
+				memcpy(odata, &buffer.response.data, olen);
+				result = 0;
 			}
 		}
-		else
-		{
-			errno = EIO;
-		}
 	}
-	else
+
+	if (result)
 	{
 		errno = EIO;
 	}
-
 	return result;
+}
+
+
+int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len)
+{
+	if (!fcd_io(dev, cmd, 0, NULL, 0, data, len))
+	{
+		return len;
+	}
+	return -1;
 }
 
 
 int fcd_set_skip(FCD *dev, unsigned char cmd, const void *data,
 	unsigned char len, unsigned char skip)
 {
-	fcd_buffer buffer;
-	int result = -1;
-
-	/*! \todo validate cmd */
-	/* do not allow NULL pointer for non-trivial set */
-	if (len && (NULL == data))
+	if (!fcd_io(dev, cmd, skip, data, len, NULL, 0))
 	{
-		errno = EFAULT;
-		return -1;
+		return len;
 	}
-	/* trim request length as needed */
-	if (len > sizeof(buffer.command.data) - skip)
-	{
-		len = sizeof(buffer.command.data) - skip;
-	}
-
-	/* send set request */
-	buffer.command.report_id = 0;
-	buffer.command.command = cmd;
-	/* pad skipped byte(s) */
-	memset(&buffer.command.data, 0, skip);
-	/* copy in data */
-	memcpy(&(buffer.command.data[skip]), data, len);
-	/*! \bug Windows: hid_write() always returns 65 */
-	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, len+2+skip) >=
-		len+2+skip)
-	{
-		/* receive set response */
-		/*! \bug Windows: hid_read() always returns 64 */
-		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, 2) >= 2)
-		{
-			/* validate response */
-			if ((buffer.response.command == cmd) &&
-				(buffer.response.status == 1))
-			{
-				result = len;
-			}
-		}
-		else
-		{
-			errno = EIO;
-		}
-	}
-	else
-	{
-		errno = EIO;
-	}
-
-	return result;
+	return -1;
 }
 
 
