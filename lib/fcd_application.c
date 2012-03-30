@@ -26,6 +26,7 @@ API int fcd_set_dc_correction(FCD *dev, int i, int q)
 	if ((i != correction[0]) || (q != correction[1]))
 	{
 		/* value out of range */
+		errno = EOVERFLOW;
 		return -1;
 	}
 	correction[0] = (int16_t) convert_le_u16((uint16_t) correction[0]);
@@ -71,6 +72,7 @@ API int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain)
 	if ((phase != correction.phase) || (gain != correction.gain))
 	{
 		/* value out of range */
+		errno = EOVERFLOW;
 		return -1;
 	}
 	correction.phase = (int16_t) convert_le_u16((uint16_t) correction.phase);
