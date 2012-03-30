@@ -12,11 +12,6 @@
 #include "fcd_common.h"
 
 
-/*
- * Functions
- */
-
-
 API int fcd_set_dc_correction(FCD *dev, int i, int q)
 {
 	int16_t correction[2];

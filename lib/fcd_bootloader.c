@@ -12,11 +12,6 @@
 #include "fcd_common.h"
 
 
-/*
- * Functions
- */
-
-
 API int fcd_bl_erase_application(FCD *dev)
 {
 	return fcd_set(dev, FCD_CMD_ERASE_APPLICATION, NULL, 0);
