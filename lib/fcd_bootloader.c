@@ -25,20 +25,13 @@ API int fcd_bl_erase_application(FCD *dev)
 
 API int fcd_bl_set_address(FCD *dev, unsigned int addr)
 {
-	int result;
 	uint32_t address;
 
 	/* convert from native format */
 	address = convert_le_u32(addr);
 
 	/* set address */
-	result = fcd_set(dev, FCD_CMD_SET_BYTE_ADDR, &address, sizeof(address));
-	if (result != sizeof(address))
-	{
-		return -1;
-	}
-
-	return 0;
+	return fcd_set(dev, FCD_CMD_SET_BYTE_ADDR, &address, sizeof(address));
 }
 
 
@@ -50,9 +43,9 @@ API int fcd_bl_get_address_range(FCD *dev, unsigned int *start,
 
 	/* get raw address range */
 	result = fcd_get(dev, FCD_CMD_GET_BYTE_ADDR_RANGE, range, sizeof(range));
-	if (result != sizeof(range))
+	if (result)
 	{
-		return -1;
+		return result;
 	}
 
 	/* output in native format */
@@ -71,22 +64,14 @@ API int fcd_bl_get_address_range(FCD *dev, unsigned int *start,
 
 API int fcd_bl_read_block(FCD *dev, unsigned char *block)
 {
-	if (fcd_get(dev, FCD_CMD_READ_BLOCK, block, 48) != 48)
-	{
-		return -1;
-	}
-	return 0;
+	return fcd_get(dev, FCD_CMD_READ_BLOCK, block, 48);
 }
 
 
 API int fcd_bl_write_block(FCD *dev, const unsigned char *block)
 {
 	/* use 1 byte skip, as write block data starts at 3 for unknown reason */
-	if (fcd_set_skip(dev, FCD_CMD_WRITE_BLOCK, block, 48, 1) != 48)
-	{
-		return -1;
-	}
-	return 0;
+	return fcd_io(dev, FCD_CMD_WRITE_BLOCK, 1, block, 48, NULL, 0);
 }
 
 

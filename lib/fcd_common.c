@@ -92,28 +92,13 @@ int fcd_io(FCD *dev, unsigned char cmd, unsigned char iskip, const void *idata,
 
 int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len)
 {
-	if (!fcd_io(dev, cmd, 0, NULL, 0, data, len))
-	{
-		return len;
-	}
-	return -1;
-}
-
-
-int fcd_set_skip(FCD *dev, unsigned char cmd, const void *data,
-	unsigned char len, unsigned char skip)
-{
-	if (!fcd_io(dev, cmd, skip, data, len, NULL, 0))
-	{
-		return len;
-	}
-	return -1;
+	return fcd_io(dev, cmd, 0, NULL, 0, data, len);
 }
 
 
 int fcd_set(FCD *dev, unsigned char cmd, const void *data, unsigned char len)
 {
-	return fcd_set_skip(dev, cmd, data, len, 0);
+	return fcd_io(dev, cmd, 0, data, len, NULL, 0);
 }
 
 
@@ -209,8 +194,7 @@ API void fcd_close(FCD *dev)
 API char * fcd_query(FCD *dev, char *str, int len)
 {
 	/* query device */
-	len = fcd_get(dev, FCD_CMD_QUERY, str, len);
-	if (len <= 0)
+	if (fcd_get(dev, FCD_CMD_QUERY, str, len))
 	{
 		/* query failed */
 		return NULL;

@@ -31,21 +31,19 @@ API int fcd_set_dc_correction(FCD *dev, int i, int q)
 	correction[0] = (int16_t) convert_le_u16((uint16_t) correction[0]);
 	correction[1] = (int16_t) convert_le_u16((uint16_t) correction[1]);
 
-	if (fcd_set(dev, FCD_CMD_SET_DC_CORR, &correction, sizeof(correction)) != sizeof(correction))
-	{
-		return -1;
-	}
-	return 0;
+	return fcd_set(dev, FCD_CMD_SET_DC_CORR, &correction, sizeof(correction));
 }
 
 
 API int fcd_get_dc_correction(FCD *dev, int *i, int *q)
 {
 	int16_t correction[2];
+	int result;
 
-	if (fcd_get(dev, FCD_CMD_GET_DC_CORR, &correction, sizeof(correction)) != sizeof(correction))
+	result = fcd_get(dev, FCD_CMD_GET_DC_CORR, &correction, sizeof(correction));
+	if (result)
 	{
-		return -1;
+		return result;
 	}
 
 	if (NULL != i)
@@ -78,11 +76,7 @@ API int fcd_set_iq_correction(FCD *dev, int phase, unsigned int gain)
 	correction.phase = (int16_t) convert_le_u16((uint16_t) correction.phase);
 	correction.gain = (int16_t) convert_le_u16((uint16_t) correction.gain);
 
-	if (fcd_set(dev, FCD_CMD_SET_IQ_CORR, &correction, sizeof(correction)) != sizeof(correction))
-	{
-		return -1;
-	}
-	return 0;
+	return fcd_set(dev, FCD_CMD_SET_IQ_CORR, &correction, sizeof(correction));
 }
 
 
@@ -92,10 +86,12 @@ API int fcd_get_iq_correction(FCD *dev, int *phase, unsigned int *gain)
 		int16_t phase;
 		uint16_t gain;
 	} correction;
+	int result;
 
-	if (fcd_get(dev, FCD_CMD_GET_IQ_CORR, &correction, sizeof(correction)) != sizeof(correction))
+	result = fcd_get(dev, FCD_CMD_GET_IQ_CORR, &correction, sizeof(correction));
+	if (result)
 	{
-		return -1;
+		return result;
 	}
 
 	if (NULL != phase)
@@ -127,21 +123,21 @@ API int fcd_get_bias_tee(FCD *dev, unsigned char *state)
 API int fcd_set_frequency_Hz(FCD *dev, unsigned int freq)
 {
 	uint32_t fHz = convert_le_u32(freq);
-	if (fcd_set(dev, FCD_CMD_SET_FREQUENCY_HZ, &fHz, sizeof(fHz)) != sizeof(fHz))
-	{
-		return -1;
-	}
-	return 0;
+	return fcd_set(dev, FCD_CMD_SET_FREQUENCY_HZ, &fHz, sizeof(fHz));
 }
 
 
 API int fcd_get_frequency_Hz(FCD *dev, unsigned int *freq)
 {
 	uint32_t fHz;
-	if (fcd_get(dev, FCD_CMD_GET_FREQUENCY_HZ, &fHz, sizeof(fHz)) != sizeof(fHz))
+	int result;
+
+	result = fcd_get(dev, FCD_CMD_GET_FREQUENCY_HZ, &fHz, sizeof(fHz));
+	if (result)
 	{
-		return -1;
+		return result;
 	}
+
 	*freq = convert_le_u32(fHz);
 	return 0;
 }
@@ -154,11 +150,7 @@ API int fcd_set_value(FCD *dev, FCD_VALUE_ENUM id, unsigned char value)
 		errno = EINVAL;
 		return -1;
 	}
-	if (fcd_set(dev, FCD_CMD_SET_VALUE_OFFSET + id, &value, 1) != 1)
-	{
-		return -1;
-	}
-	return 0;
+	return fcd_set(dev, FCD_CMD_SET_VALUE_OFFSET + id, &value, 1);
 }
 
 
@@ -169,9 +161,5 @@ API int fcd_get_value(FCD *dev, FCD_VALUE_ENUM id, unsigned char *value)
 		errno = EINVAL;
 		return -1;
 	}
-	if (fcd_get(dev, FCD_CMD_GET_VALUE_OFFSET + id, &value, 1) != 1)
-	{
-		return -1;
-	}
-	return 0;
+	return fcd_get(dev, FCD_CMD_GET_VALUE_OFFSET + id, &value, 1);
 }

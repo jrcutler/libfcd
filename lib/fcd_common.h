@@ -141,28 +141,18 @@ int fcd_io(FCD *dev, unsigned char cmd, unsigned char iskip, const void *idata,
  * \param         cmd  command ID
  * \param[out]    data output data pointer
  * \param         len  output data length
- * \returns length of received data or -1 on error
+ * \retval 0     success
+ * \retval non-0 failure
  */
 int fcd_get(FCD *dev, unsigned char cmd, void *data, unsigned char len);
-
-/*! \brief Perform a set command with optional skipped data bytes
- * \param[in,out] dev  open \ref FCD
- * \param         cmd  command ID
- * \param[in]     data input data pointer
- * \param         len  input data length
- * \param         skip number of data bytes to skip (normally 0)
- * \returns length of sent data or -1 on error
- * \note For now, this only appears to be necessary for the write block command.
- */
-int fcd_set_skip(FCD *dev, unsigned char cmd, const void *data,
-	unsigned char len, unsigned char skip);
 
 /*! \brief Perform a set command
  * \param[in,out] dev  open \ref FCD
  * \param         cmd  command ID
  * \param[in]     data input data pointer
  * \param         len  input data length
- * \returns length of sent data or -1 on error
+ * \retval 0     success
+ * \retval non-0 failure
  */
 int fcd_set(FCD *dev, unsigned char cmd, const void *data, unsigned char len);
 
