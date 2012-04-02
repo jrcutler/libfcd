@@ -23,8 +23,8 @@ extern "C"
 /*! \brief Implementation of \ref FCD */
 struct FCD_impl
 {
-	/*! \brief HID device */
-	hid_device *hid_dev;
+	/*! \brief HID device path */
+	char *path;
 };
 
 /*! \brief FUNcube dongle command data length */

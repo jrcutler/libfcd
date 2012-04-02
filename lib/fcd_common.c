@@ -37,10 +37,17 @@ void ms_sleep(unsigned int ms)
 int fcd_io(FCD *dev, unsigned char cmd, unsigned char iskip, const void *idata,
 	unsigned char ilen, void *odata, unsigned char olen)
 {
+	hid_device *hid_dev;
 	fcd_buffer buffer;
 	int result = -1;
 
 	/*! \todo validate cmd */
+	/* do not allow NULL pointer for device */
+	if (NULL == dev)
+	{
+		errno = EFAULT;
+		return -1;
+	}
 	/* do not allow NULL pointer for non-trivial I/O */
 	if ((ilen && (NULL == idata)) || (olen && (NULL == odata)))
 	{
@@ -57,6 +64,14 @@ int fcd_io(FCD *dev, unsigned char cmd, unsigned char iskip, const void *idata,
 		olen = sizeof(buffer.response.data);
 	}
 
+	/*! \bug Linux: simultaneously open devices are not entirely process safe */
+	hid_dev = hid_open_path(dev->path);
+	if (NULL == hid_dev)
+	{
+		errno = ENODEV;
+		return -1;
+	}
+
 	/* send request */
 	buffer.command.report_id = 0;
 	buffer.command.command = cmd;
@@ -65,12 +80,12 @@ int fcd_io(FCD *dev, unsigned char cmd, unsigned char iskip, const void *idata,
 	/* copy in data */
 	memcpy(&(buffer.command.data[iskip]), idata, ilen);
 	/*! \bug Windows: hid_write() always returns 65 */
-	if (hid_write(dev->hid_dev, (unsigned char *)&buffer, ilen+2+iskip) >=
+	if (hid_write(hid_dev, (unsigned char *)&buffer, ilen+2+iskip) >=
 		ilen+2+iskip)
 	{
 		/* receive response */
 		/*! \bug Windows: hid_read() always returns 64 */
-		if (hid_read(dev->hid_dev, (unsigned char *)&buffer, olen+2) >= olen+2)
+		if (hid_read(hid_dev, (unsigned char *)&buffer, olen+2) >= olen+2)
 		{
 			/* validate response */
 			if ((buffer.response.command == cmd) &&
@@ -81,6 +96,8 @@ int fcd_io(FCD *dev, unsigned char cmd, unsigned char iskip, const void *idata,
 			}
 		}
 	}
+
+	hid_close(hid_dev);
 
 	if (result)
 	{
@@ -160,20 +177,40 @@ API FCD * fcd_open(const char *path)
 	{
 		if (NULL == path)
 		{
-			/* get first available FUNcube dongle HID device */
-			dev->hid_dev = hid_open(FCD_USB_VID, FCD_USB_PID, NULL);
+			/* use the first enumerated device path */
+			struct hid_device_info *devs;
+			devs = hid_enumerate(FCD_USB_VID, FCD_USB_PID);
+			if (NULL != devs && NULL != devs->path)
+			{
+				dev->path = strdup(devs->path);
+			}
+			else
+			{
+				dev->path = NULL;
+			}
+			hid_free_enumeration(devs);
 		}
 		else
 		{
-			/* open FUNcube dongle HID device by path */
-			dev->hid_dev = hid_open_path(path);
+			/* use provided path */
+			dev->path = strdup(path);
 		}
-		if (NULL == dev->hid_dev)
+		if (NULL != dev->path)
+		{
+			/* query path to verify presence of a FUNcube dongle */
+			char data[64];
+			if (NULL == fcd_query(dev, data, sizeof(data)))
+			{
+				/* query failed */
+				fcd_close(dev);
+				dev = NULL;
+			}
+		}
+		else
 		{
 			/* could not open HID device */
 			fcd_close(dev);
 			dev = NULL;
-			errno = EINVAL;
 		}
 	}
 
@@ -185,7 +222,10 @@ API void fcd_close(FCD *dev)
 {
 	if (NULL != dev)
 	{
-		hid_close(dev->hid_dev);
+		if (NULL != dev->path)
+		{
+			free(dev->path);
+		}
 		free(dev);
 	}
 }
