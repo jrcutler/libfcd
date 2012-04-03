@@ -195,20 +195,8 @@ API FCD * fcd_open(const char *path)
 			/* use provided path */
 			dev->path = strdup(path);
 		}
-		if (NULL != dev->path)
+		if (NULL == dev->path)
 		{
-			/* query path to verify presence of a FUNcube dongle */
-			char data[64];
-			if (NULL == fcd_query(dev, data, sizeof(data)))
-			{
-				/* query failed */
-				fcd_close(dev);
-				dev = NULL;
-			}
-		}
-		else
-		{
-			/* could not open HID device */
 			fcd_close(dev);
 			dev = NULL;
 		}
