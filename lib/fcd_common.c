@@ -192,8 +192,20 @@ API FCD * fcd_open(const char *path)
 		}
 		else
 		{
-			/* use provided path */
-			dev->path = strdup(path);
+			/* open device to validate provided path */
+			hid_device *hid_dev;
+			hid_dev = hid_open_path(path);
+			if (NULL != hid_dev)
+			{
+				/* use provided path */
+				dev->path = strdup(path);
+			}
+			else
+			{
+				/* could not open path */
+				dev->path = NULL;
+			}
+			hid_close(hid_dev);
 		}
 		if (NULL == dev->path)
 		{
