@@ -7,7 +7,7 @@
 
 #include <errno.h> /* E*, errno */
 #include <stdlib.h> /* NULL, malloc, free */
-#include <string.h> /* memset, memcpy */
+#include <string.h> /* memset, memcpy, strdup */
 #ifdef HAVE_USLEEP
 # ifdef HAVE_UNISTD_H
 #  include <unistd.h> /* usleep */
