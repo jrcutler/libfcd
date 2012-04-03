@@ -273,7 +273,7 @@ static void usage(void)
 	puts("");
 	puts("Mandatory arguments to long options are mandatory for short options too.");
 	puts("      --flash=FILE  perform a full flash upgrade from firmware image");
-	puts("                    (equivalent to `-r -ew -iFILE`)");
+	puts("                    (equivalent to `-r -ewv -iFILE`)");
 	puts("  -i, --input=FILE  read image from FILE");
 	puts("  -r, --reset[=MS]  reset to/from bootloader with a MS millisecond");
 	puts("                    delay (default is 2000 ms)");
