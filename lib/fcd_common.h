@@ -7,7 +7,7 @@
 # ifdef HAVE_STDINT_H
 #  include <stdint.h> /* [u]int*_t */
 # endif
-#include "hidapi/hidapi.h" /* hid_* */
+# include "hidapi/hidapi.h" /* hid_* */
 
 # ifdef __cplusplus
 extern "C"
@@ -167,4 +167,4 @@ int fcd_reset(const char *path, void *context);
 }
 # endif
 
-#endif /* FCD_H */
+#endif /* FCD_COMMON_H */

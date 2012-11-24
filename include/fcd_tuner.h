@@ -2,6 +2,8 @@
  * \brief FUNcube dongle tuner hardware enumerations
  * \note Values, names, and descriptions are derived from \c FCHID008.zip.
  */
+#ifndef FCD_TUNER_H
+# define FCD_TUNER_H
 
 /*! \brief Tuner LNA gain values */
 typedef enum
@@ -232,3 +234,5 @@ typedef enum
 	FCD_TIG6E_P12_0DB=3, /*!< \brief 12.0 dB */
 	FCD_TIG6E_P15_0DB=4  /*!< \brief 15.0 dB */
 } FCD_TUNER_IF_GAIN6_ENUM;
+
+#endif /* FCD_TUNER_H */
