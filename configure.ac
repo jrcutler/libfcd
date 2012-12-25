@@ -75,6 +75,7 @@ AC_C_BIGENDIAN
 AC_TYPE_INT16_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
+gl_EOVERFLOW
 
 ## check for library functions
 AC_CHECK_FUNCS([getopt_long memset strdup strtoul])
