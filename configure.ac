@@ -31,15 +31,16 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 # handle host-specific details
 MACOS="no"
 WINDOWS="no"
-LINUX="no"
+LIBUSB="no"
 AS_CASE([$host],
-  [*-*-linux*],  [LINUX="yes"],
-  [*-*-darwin*], [MACOSX="yes"],
-  [*-*-win*],    [WINDOWS="yes" ; ac_cv_func_malloc_0_nonnull=yes],
-  [*-*-mingw*],  [WINDOWS="yes" ; ac_cv_func_malloc_0_nonnull=yes],
+  [*-*-linux*],   [LIBUSB="yes"],
+  [*-*-freebsd*], [LIBUSB="yes"],
+  [*-*-darwin*],  [MACOSX="yes"],
+  [*-*-win*],     [WINDOWS="yes" ; ac_cv_func_malloc_0_nonnull=yes],
+  [*-*-mingw*],   [WINDOWS="yes" ; ac_cv_func_malloc_0_nonnull=yes],
   []
 )
-AM_CONDITIONAL([LINUX], [ test "x$LINUX" = "xyes" ])
+AM_CONDITIONAL([LIBUSB], [ test "x$LIBUSB" = "xyes" ])
 AM_CONDITIONAL([MACOSX], [ test "x$MACOSX" = "xyes" ])
 AM_CONDITIONAL([WINDOWS], [ test "x$WINDOWS" = "xyes" ])
 
@@ -59,7 +60,7 @@ AC_SUBST(LT_REVISION, 0)
 AC_SUBST(LT_AGE, 0)
 
 ## check for libraries
-AS_IF([test "x$LINUX" = "xyes" ],
+AS_IF([test "x$LIBUSB" = "xyes" ],
   [PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0)
   # suppress libusb header warnings (as needed)
   AS_IF([test "x$enable_warnings" = "xyes"],
