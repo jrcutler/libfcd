@@ -1,0 +1,3 @@
+language: c
+install: sudo apt-get install -qq libusb-1.0-0-dev pkg-config
+script: ./bootstrap && ./configure --enable-warnings && make && make check
