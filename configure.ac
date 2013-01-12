@@ -61,7 +61,7 @@ AC_SUBST(LT_AGE, 0)
 
 ## check for libraries
 AS_IF([test "x$LIBUSB" = "xyes" ],
-  [PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0)
+  [PKG_CHECK_MODULES([LIBUSB], libusb-1.0 >= 1.0)
   # suppress libusb header warnings (as needed)
   AS_IF([test "x$enable_warnings" = "xyes"],
     [LIBUSB_CFLAGS=$(echo "${LIBUSB_CFLAGS}" | sed -e 's|-I/|-isystem/|')])])
