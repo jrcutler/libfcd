@@ -442,7 +442,8 @@ struct hid_device_info  HID_API_EXPORT *hid_enumerate(unsigned short vendor_id, 
 	struct hid_device_info *root = NULL; /* return object */
 	struct hid_device_info *cur_dev = NULL;
 
-	hid_init();
+	if(hid_init() < 0)
+		return NULL;
 
 	num_devs = libusb_get_device_list(usb_context, &devs);
 	if (num_devs < 0)
@@ -456,10 +457,6 @@ struct hid_device_info  HID_API_EXPORT *hid_enumerate(unsigned short vendor_id, 
 		int res = libusb_get_device_descriptor(dev, &desc);
 		unsigned short dev_vid = desc.idVendor;
 		unsigned short dev_pid = desc.idProduct;
-
-		/* HID's are defined at the interface level. */
-		if (desc.bDeviceClass != LIBUSB_CLASS_PER_INTERFACE)
-			continue;
 
 		res = libusb_get_active_config_descriptor(dev, &conf_desc);
 		if (res < 0)
@@ -791,7 +788,8 @@ hid_device * HID_API_EXPORT hid_open_path(const char *path)
 
 	dev = new_hid_device();
 
-	hid_init();
+	if(hid_init() < 0)
+		return NULL;
 
 	libusb_get_device_list(usb_context, &devs);
 	while ((usb_dev = devs[d++]) != NULL) {
